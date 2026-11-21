@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#115E59" />
-  <title>MyKampung — Portal Informasi Kampung</title>
-  <link rel="manifest" href='data:application/manifest+json,{"name":"MyKampung Portal","short_name":"MyKampung","start_url":".","display":"standalone","background_color":"#F8FAFC","theme_color":"#115E59","icons":[{"src":"https://ui-avatars.com/api/?name=MK&background=115E59&color=fff&size=192","sizes":"192x192","type":"image/png"}]}' />
+  <title>Kampung Panyingkiran — Portal Informasi Kampung</title>
+  <link rel="manifest" href='data:application/manifest+json,{"name":"Kampung Panyingkiran","short_name":"Panyingkiran","start_url":".","display":"standalone","background_color":"#F8FAFC","theme_color":"#115E59","icons":[{"src":"https://ui-avatars.com/api/?name=KP&background=115E59&color=fff&size=192","sizes":"192x192","type":"image/png"}]}' />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -27,7 +27,7 @@
     <div class="max-w-7xl mx-auto px-4 lg:px-8 flex flex-wrap items-center justify-between gap-2">
       <div class="flex items-center gap-2 font-medium">
         <i data-lucide="sprout" class="w-4 h-4 text-lime-400"></i>
-        <span id="top-domain">MyKampung.my.id | Portal Informasi Kampung Kita</span>
+        <span id="top-domain">Kampung Panyingkiran | Portal Informasi Kampung Kita</span>
       </div>
       <div class="flex items-center gap-3 ml-auto">
         <div class="hidden sm:flex items-center gap-1.5">
@@ -52,7 +52,7 @@
         </div>
         <div>
           <div class="text-xl font-extrabold leading-none tracking-tight">
-            <span class="text-[#115E59]" id="brand-p1">My</span><span class="text-orange-600" id="brand-p2">Kampung</span>
+            <span class="text-[#115E59]" id="brand-p1">Kampung </span><span class="text-orange-600" id="brand-p2">Panyingkiran</span>
           </div>
           <div class="text-[11px] text-slate-500 font-medium mt-0.5" id="brand-tagline">Portal Informasi Kampung</div>
         </div>
@@ -69,7 +69,7 @@
   <!-- FOOTER -->
   <footer class="bg-[#0B3F42] text-teal-100 mt-auto">
     <div class="max-w-7xl mx-auto px-4 lg:px-8 py-8 text-center text-xs">
-      &copy; 2026 <strong id="footer-copy" class="text-white">MyKampung</strong>. Portal Informasi Warga.
+      &copy; 2026 <strong id="footer-copy" class="text-white">Kampung Panyingkiran</strong>. <span id="footer-sub">Portal Informasi Warga.</span>
     </div>
   </footer>
 
@@ -88,7 +88,6 @@
   </div>
 
   <script type="module">
-    // KONFIGURASI APLIKASI (MODE PRODUKSI FIREBASE)
     const IS_PREVIEW = false;
 
     const firebaseConfig = {
@@ -118,27 +117,60 @@
 
     let currentPage = 'beranda';
     const state = {
-      beranda: { nama: 'MyKampung', domain: 'MyKampung.my.id | Portal Informasi Kampung Kita', tagline: 'Portal Informasi Kampung', heroKecil: 'Kampung Kita', heroHighlight: 'Kampung yang Asri, Guyub, dan Berdaya', heroSub: 'Informasi, kegiatan, layanan, dan potensi kampung dalam satu portal.', heroImg: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1600&q=80', fb: '#', ig: '#', yt: '#' },
+      beranda: {
+        nama: 'Kampung Panyingkiran',
+        domain: 'Kampung Panyingkiran | Portal Informasi Kampung Kita',
+        tagline: 'Portal Informasi Kampung',
+        footerSub: 'Portal Informasi Warga.',
+        heroKecil: 'Kampung Panyingkiran',
+        heroHighlight: 'Kampung yang Asri, Guyub, dan Berdaya',
+        heroSub: 'Informasi, kegiatan, layanan, dan potensi kampung dalam satu portal.',
+        heroImg: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1600&q=80',
+        fb: '#', ig: '#', yt: '#',
+        menuBeranda: 'Beranda',
+        menuProfil: 'Profil Kampung',
+        menuBerita: 'Berita',
+        menuGaleri: 'Galeri',
+        menuLayanan: 'Layanan',
+        menuPotensi: 'Potensi',
+        menuAgenda: 'Agenda',
+        menuKontak: 'Kontak',
+        secBerita: 'Berita Terbaru',
+        secPengumuman: 'Pengumuman',
+        secPotensi: 'Potensi Unggulan Kampung'
+      },
       profil: { sejarah: '', visi: '', misi: [], stats: { penduduk: '0', kk: '0', rt: '0', rw: '0' }, perangkat: [] },
       kontak: { alamat: '-', telepon: '-', whatsapp: '', email: '-', jam: '-' },
       berita: [], galeri: [], layanan: [], potensi: [], agenda: []
     };
 
-    const NAV_ITEMS = [
-      { id: 'beranda', label: 'Beranda', icon: 'home', mobile: true },
-      { id: 'profil', label: 'Profil', icon: 'users', mobile: false },
-      { id: 'berita', label: 'Berita', icon: 'newspaper', mobile: true },
-      { id: 'galeri', label: 'Galeri', icon: 'images', mobile: false },
-      { id: 'layanan', label: 'Layanan', icon: 'clipboard-list', mobile: true },
-      { id: 'potensi', label: 'Potensi', icon: 'sprout', mobile: false },
-      { id: 'agenda', label: 'Agenda', icon: 'megaphone', mobile: true },
-      { id: 'kontak', label: 'Kontak', icon: 'mail', mobile: true }
-    ];
+    function getNavItems() {
+      const b = state.beranda;
+      return [
+        { id: 'beranda', label: b.menuBeranda || 'Beranda', icon: 'home', mobile: true },
+        { id: 'profil', label: b.menuProfil || 'Profil Kampung', icon: 'users', mobile: false },
+        { id: 'berita', label: b.menuBerita || 'Berita', icon: 'newspaper', mobile: true },
+        { id: 'galeri', label: b.menuGaleri || 'Galeri', icon: 'images', mobile: false },
+        { id: 'layanan', label: b.menuLayanan || 'Layanan', icon: 'clipboard-list', mobile: true },
+        { id: 'potensi', label: b.menuPotensi || 'Potensi', icon: 'sprout', mobile: false },
+        { id: 'agenda', label: b.menuAgenda || 'Agenda', icon: 'megaphone', mobile: true },
+        { id: 'kontak', label: b.menuKontak || 'Kontak', icon: 'mail', mobile: true }
+      ];
+    }
 
     function initApp() {
-      onSnapshot(doc(db, 'settings', 'beranda'), snap => { if (snap.exists()) state.beranda = { ...state.beranda, ...snap.data() }; renderAll(); });
-      onSnapshot(doc(db, 'settings', 'profil'), snap => { if (snap.exists()) state.profil = { ...state.profil, ...snap.data() }; renderAll(); });
-      onSnapshot(doc(db, 'settings', 'kontak'), snap => { if (snap.exists()) state.kontak = { ...state.kontak, ...snap.data() }; renderAll(); });
+      onSnapshot(doc(db, 'settings', 'beranda'), snap => {
+        if (snap.exists()) state.beranda = { ...state.beranda, ...snap.data() };
+        renderAll();
+      });
+      onSnapshot(doc(db, 'settings', 'profil'), snap => {
+        if (snap.exists()) state.profil = { ...state.profil, ...snap.data() };
+        renderAll();
+      });
+      onSnapshot(doc(db, 'settings', 'kontak'), snap => {
+        if (snap.exists()) state.kontak = { ...state.kontak, ...snap.data() };
+        renderAll();
+      });
 
       const bindCol = (colName, key) => {
         onSnapshot(query(collection(db, colName), orderBy('createdAt', 'desc')), snap => {
@@ -161,27 +193,34 @@
 
     function renderAll() {
       const b = state.beranda;
-      document.title = `${b.nama} — ${b.tagline}`;
-      document.getElementById('top-domain').textContent = b.domain;
-      document.getElementById('brand-tagline').textContent = b.tagline;
-      document.getElementById('footer-copy').textContent = b.nama;
-      if (b.nama.toLowerCase().startsWith('my') && b.nama.length > 2) {
-        document.getElementById('brand-p1').textContent = b.nama.slice(0, 2);
-        document.getElementById('brand-p2').textContent = b.nama.slice(2);
+      const nama = b.nama || 'Kampung Panyingkiran';
+      document.title = `${nama} — ${b.tagline || 'Portal Informasi Kampung'}`;
+      document.getElementById('top-domain').textContent = b.domain || nama;
+      document.getElementById('brand-tagline').textContent = b.tagline || '';
+      document.getElementById('footer-copy').textContent = nama;
+      document.getElementById('footer-sub').textContent = b.footerSub || 'Portal Informasi Warga.';
+
+      // Bagi 2 warna logo secara otomatis berdasarkan spasi (misal: "Kampung" + "Panyingkiran")
+      const parts = nama.trim().split(/\s+/);
+      if (parts.length > 1) {
+        document.getElementById('brand-p1').textContent = parts[0] + ' ';
+        document.getElementById('brand-p2').textContent = parts.slice(1).join(' ');
       } else {
-        document.getElementById('brand-p1').textContent = b.nama;
+        document.getElementById('brand-p1').textContent = nama;
         document.getElementById('brand-p2').textContent = '';
       }
+
       document.getElementById('soc-fb').href = b.fb || '#';
       document.getElementById('soc-ig').href = b.ig || '#';
       document.getElementById('soc-yt').href = b.yt || '#';
 
-      document.getElementById('desktop-nav').innerHTML = NAV_ITEMS.map(item => `
+      const navItems = getNavItems();
+      document.getElementById('desktop-nav').innerHTML = navItems.map(item => `
         <button onclick="window.navigate('${item.id}')" class="px-3.5 py-2 rounded-xl flex items-center gap-1.5 transition ${currentPage===item.id ? 'bg-[#16695E] text-white shadow-sm' : 'text-slate-700 hover:bg-teal-50 hover:text-teal-800'}">
           <i data-lucide="${item.icon}" class="w-4 h-4"></i><span>${item.label}</span>
         </button>`).join('');
 
-      document.getElementById('mobile-bottom-nav').innerHTML = NAV_ITEMS.filter(i => i.mobile).map(item => `
+      document.getElementById('mobile-bottom-nav').innerHTML = navItems.filter(i => i.mobile).map(item => `
         <button onclick="window.navigate('${item.id}')" class="flex flex-col items-center gap-0.5 px-2 py-1 rounded-xl text-[10px] font-bold transition ${currentPage===item.id ? 'text-[#115E59] bg-teal-50' : 'text-slate-500'}">
           <i data-lucide="${item.icon}" class="w-5 h-5"></i><span>${item.label}</span>
         </button>`).join('');
@@ -219,7 +258,7 @@
                 <p class="text-sm md:text-base text-teal-50/95 mb-7 max-w-lg">${b.heroSub}</p>
                 <div class="flex flex-wrap gap-3">
                   <button onclick="window.navigate('potensi')" class="px-6 py-2.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-600 text-white font-bold text-sm shadow-lg flex items-center gap-2">Jelajahi Sekarang <i data-lucide="arrow-right" class="w-4 h-4"></i></button>
-                  <button onclick="window.navigate('profil')" class="px-6 py-2.5 rounded-full border border-white/75 bg-white/10 backdrop-blur-sm text-white font-semibold text-sm flex items-center gap-2"><i data-lucide="play-circle" class="w-4 h-4"></i> Profil Kampung</button>
+                  <button onclick="window.navigate('profil')" class="px-6 py-2.5 rounded-full border border-white/75 bg-white/10 backdrop-blur-sm text-white font-semibold text-sm flex items-center gap-2"><i data-lucide="play-circle" class="w-4 h-4"></i> ${b.menuProfil || 'Profil Kampung'}</button>
                 </div>
               </div>
             </div>
@@ -227,11 +266,11 @@
 
           <section class="max-w-7xl mx-auto px-4 lg:px-8 -mt-12 relative z-20">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-              ${qCard('profil','bg-violet-600','users','Profil Kampung','Sejarah, budaya, dan kehidupan warga')}
-              ${qCard('berita','bg-sky-600','newspaper','Berita Kampung','Kabar terbaru & agenda kegiatan')}
-              ${qCard('galeri','bg-pink-500','image','Galeri Kampung','Foto & video aktivitas warga')}
-              ${qCard('layanan','bg-amber-500','clipboard-list','Layanan Kampung','Informasi & layanan untuk warga')}
-              ${qCard('potensi','bg-lime-600','sprout','Potensi Kampung','Wisata, UMKM, pertanian, dan lainnya')}
+              ${qCard('profil','bg-violet-600','users', b.menuProfil || 'Profil Kampung','Sejarah, budaya, dan kehidupan warga')}
+              ${qCard('berita','bg-sky-600','newspaper', b.menuBerita || 'Berita','Kabar terbaru & agenda kegiatan')}
+              ${qCard('galeri','bg-pink-500','image', b.menuGaleri || 'Galeri','Foto & video aktivitas warga')}
+              ${qCard('layanan','bg-amber-500','clipboard-list', b.menuLayanan || 'Layanan','Informasi & layanan untuk warga')}
+              ${qCard('potensi','bg-lime-600','sprout', b.menuPotensi || 'Potensi','Wisata, UMKM, pertanian, dan lainnya')}
             </div>
           </section>
 
@@ -239,7 +278,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-7 items-start">
               <div class="lg:col-span-8">
                 <div class="flex items-center justify-between mb-5">
-                  <h2 class="text-xl md:text-2xl font-extrabold flex items-center gap-2"><i data-lucide="leaf" class="w-6 h-6 text-emerald-600"></i> Berita Terbaru</h2>
+                  <h2 class="text-xl md:text-2xl font-extrabold flex items-center gap-2"><i data-lucide="leaf" class="w-6 h-6 text-emerald-600"></i> ${b.secBerita || 'Berita Terbaru'}</h2>
                   <button onclick="window.navigate('berita')" class="text-sm font-bold text-[#115E59] hover:text-orange-600">Lihat Semua &rarr;</button>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-5">
@@ -274,7 +313,7 @@
               <div class="lg:col-span-4">
                 <div class="bg-white rounded-2xl shadow-md border border-slate-100 overflow-hidden">
                   <div class="bg-[#135D56] px-5 py-3.5 flex items-center justify-between text-white">
-                    <div class="flex items-center gap-2 font-bold"><i data-lucide="megaphone" class="w-5 h-5 text-amber-400"></i> Pengumuman</div>
+                    <div class="flex items-center gap-2 font-bold"><i data-lucide="megaphone" class="w-5 h-5 text-amber-400"></i> ${b.secPengumuman || 'Pengumuman'}</div>
                     <button onclick="window.navigate('agenda')" class="text-xs text-teal-100 hover:text-amber-300">Semua &rarr;</button>
                   </div>
                   <div class="divide-y divide-slate-100">
@@ -297,7 +336,7 @@
             <svg viewBox="0 0 1440 70" fill="none" class="w-full h-10 md:h-16 block -mb-1"><path d="M0 32C240 0 480 0 720 32C960 64 1200 64 1440 24V70H0V32Z" fill="#115E59"/></svg>
             <div class="bg-[#115E59] text-white pt-4 pb-12">
               <div class="max-w-7xl mx-auto px-4 lg:px-8">
-                <h2 class="text-xl md:text-2xl font-extrabold flex items-center gap-2 mb-7"><i data-lucide="sprout" class="w-6 h-6 text-lime-400"></i> Potensi Unggulan Kampung</h2>
+                <h2 class="text-xl md:text-2xl font-extrabold flex items-center gap-2 mb-7"><i data-lucide="sprout" class="w-6 h-6 text-lime-400"></i> ${b.secPotensi || 'Potensi Unggulan Kampung'}</h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                   ${pots.map(p => `
                     <div onclick="window.navigate('potensi')" class="flex items-center gap-4 p-3 rounded-2xl hover:bg-white/10 cursor-pointer transition">
@@ -321,7 +360,7 @@
     function viewProfil() {
       const p = state.profil;
       return `<div class="max-w-7xl mx-auto px-4 lg:px-8 py-10 fade-in">
-        <h1 class="text-2xl font-extrabold mb-6">Profil Kampung</h1>
+        <h1 class="text-2xl font-extrabold mb-6">${state.beranda.menuProfil || 'Profil Kampung'}</h1>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           ${[['Penduduk', p.stats?.penduduk||'0'],['Kepala Keluarga', p.stats?.kk||'0'],['RT', p.stats?.rt||'0'],['RW', p.stats?.rw||'0']].map(x => `<div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100"><div class="text-2xl font-extrabold text-[#115E59]">${x[1]}</div><div class="text-xs text-slate-500">${x[0]}</div></div>`).join('')}
         </div>
@@ -335,7 +374,7 @@
     function viewBerita() {
       const list = state.berita.filter(x => x.status !== 'draft');
       return `<div class="max-w-7xl mx-auto px-4 lg:px-8 py-10 fade-in">
-        <h1 class="text-2xl font-extrabold mb-6">Berita Kampung</h1>
+        <h1 class="text-2xl font-extrabold mb-6">${state.beranda.menuBerita || 'Berita'}</h1>
         <div class="grid md:grid-cols-3 gap-6">${list.map(b => `
           <article onclick="window.openBerita('${b.id}')" class="bg-white rounded-2xl shadow-sm hover:shadow-lg border border-slate-100 overflow-hidden cursor-pointer transition">
             <img src="${b.gambar}" class="w-full h-44 object-cover" />
@@ -346,7 +385,7 @@
 
     function viewGaleri() {
       return `<div class="max-w-7xl mx-auto px-4 lg:px-8 py-10 fade-in">
-        <h1 class="text-2xl font-extrabold mb-6">Galeri Kampung</h1>
+        <h1 class="text-2xl font-extrabold mb-6">${state.beranda.menuGaleri || 'Galeri'}</h1>
         <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">${state.galeri.map(g => `
           <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-100"><img src="${g.url}" class="w-full h-44 object-cover" /><div class="p-4"><div class="text-xs font-bold text-teal-700">${g.kategori} (${g.tipe})</div><div class="font-bold text-sm mt-0.5">${g.judul}</div></div></div>`).join('') || '<p class="text-slate-400 text-sm">Belum ada galeri.</p>'}</div>
       </div>`;
@@ -354,7 +393,7 @@
 
     function viewLayanan() {
       return `<div class="max-w-7xl mx-auto px-4 lg:px-8 py-10 fade-in">
-        <h1 class="text-2xl font-extrabold mb-6">Layanan Kampung</h1>
+        <h1 class="text-2xl font-extrabold mb-6">${state.beranda.menuLayanan || 'Layanan'}</h1>
         <div class="grid md:grid-cols-3 gap-6">${state.layanan.map(l => `
           <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 flex flex-col">
             <h3 class="font-extrabold text-lg mb-2">${l.nama}</h3>
@@ -369,7 +408,7 @@
 
     function viewPotensi() {
       return `<div class="max-w-7xl mx-auto px-4 lg:px-8 py-10 fade-in">
-        <h1 class="text-2xl font-extrabold mb-6">Potensi Kampung</h1>
+        <h1 class="text-2xl font-extrabold mb-6">${state.beranda.menuPotensi || 'Potensi'}</h1>
         <div class="grid md:grid-cols-2 gap-6">${state.potensi.map(p => `
           <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-100 flex flex-col sm:flex-row">
             <img src="${p.gambar}" class="sm:w-44 h-44 sm:h-auto object-cover" />
@@ -380,7 +419,7 @@
 
     function viewAgenda() {
       return `<div class="max-w-7xl mx-auto px-4 lg:px-8 py-10 fade-in">
-        <h1 class="text-2xl font-extrabold mb-6">Agenda & Pengumuman</h1>
+        <h1 class="text-2xl font-extrabold mb-6">${state.beranda.menuAgenda || 'Agenda & Pengumuman'}</h1>
         <div class="space-y-4">${state.agenda.map(a => `
           <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
             <span class="text-[11px] font-bold uppercase text-amber-600">${a.jenis}</span>
@@ -394,7 +433,7 @@
     function viewKontak() {
       const k = state.kontak;
       return `<div class="max-w-7xl mx-auto px-4 lg:px-8 py-10 fade-in">
-        <h1 class="text-2xl font-extrabold mb-6">Kontak Pengelola</h1>
+        <h1 class="text-2xl font-extrabold mb-6">${state.beranda.menuKontak || 'Kontak Pengelola'}</h1>
         <div class="grid lg:grid-cols-12 gap-6">
           <div class="lg:col-span-5 bg-white rounded-2xl p-6 shadow-sm border border-slate-100 space-y-3 text-sm">
             <div><strong>Alamat:</strong> ${k.alamat}</div><div><strong>Telepon:</strong> ${k.telepon}</div><div><strong>Email:</strong> ${k.email}</div><div><strong>Jam:</strong> ${k.jam}</div>
