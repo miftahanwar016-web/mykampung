@@ -3,23 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MyKampung — Portal Informasi Kampung Kita</title>
+  <meta name="theme-color" content="#115E59" />
+  <title>MyKampung — Portal Informasi Kampung</title>
+  <link rel="manifest" href='data:application/manifest+json,{"name":"MyKampung Portal","short_name":"MyKampung","start_url":".","display":"standalone","background_color":"#F8FAFC","theme_color":"#115E59","icons":[{"src":"https://ui-avatars.com/api/?name=MK&background=115E59&color=fff&size=192","sizes":"192x192","type":"image/png"}]}' />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #F8FAFC; color: #0F172A; }
-    .hero-gradient {
-      background: linear-gradient(95deg, #0F5156 0%, rgba(15, 81, 86, 0.94) 38%, rgba(15, 81, 86, 0.55) 62%, rgba(15, 81, 86, 0.1) 100%);
-    }
-    @media (max-width: 768px) {
-      .hero-gradient {
-        background: linear-gradient(180deg, rgba(15, 81, 86, 0.92) 0%, rgba(15, 81, 86, 0.78) 65%, rgba(15, 81, 86, 0.92) 100%);
-      }
-    }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #F8FAFC; color: #0F172A; padding-bottom: 70px; }
+    @media (min-width: 1024px) { body { padding-bottom: 0; } }
+    .hero-gradient { background: linear-gradient(95deg, #0F5156 0%, rgba(15,81,86,0.92) 38%, rgba(15,81,86,0.5) 65%, rgba(15,81,86,0.1) 100%); }
+    @media (max-width: 768px) { .hero-gradient { background: linear-gradient(180deg, rgba(15,81,86,0.92) 0%, rgba(15,81,86,0.78) 60%, rgba(15,81,86,0.94) 100%); } }
+    .glass { background: rgba(255,255,255,0.88); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
     .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-    .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
     .fade-in { animation: fadeIn 0.25s ease-out; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
   </style>
@@ -34,7 +30,7 @@
         <span id="top-domain">MyKampung.my.id | Portal Informasi Kampung Kita</span>
       </div>
       <div class="flex items-center gap-3 ml-auto">
-        <div id="top-socials" class="hidden sm:flex items-center gap-1.5">
+        <div class="hidden sm:flex items-center gap-1.5">
           <a href="#" id="soc-fb" target="_blank" class="w-6 h-6 rounded-full bg-white/15 hover:bg-blue-600 flex items-center justify-center transition"><i data-lucide="facebook" class="w-3.5 h-3.5"></i></a>
           <a href="#" id="soc-ig" target="_blank" class="w-6 h-6 rounded-full bg-white/15 hover:bg-pink-600 flex items-center justify-center transition"><i data-lucide="instagram" class="w-3.5 h-3.5"></i></a>
           <a href="#" id="soc-yt" target="_blank" class="w-6 h-6 rounded-full bg-white/15 hover:bg-red-600 flex items-center justify-center transition"><i data-lucide="youtube" class="w-3.5 h-3.5"></i></a>
@@ -47,842 +43,416 @@
     </div>
   </div>
 
-  <!-- STICKY MAIN NAVBAR -->
-  <header class="bg-white/95 backdrop-blur-md sticky top-0 z-40 shadow-sm border-b border-slate-100">
-    <div class="max-w-7xl mx-auto px-4 lg:px-8 h-18 py-3 flex items-center justify-between gap-4">
-      <!-- Logo -->
-      <button onclick="navigate('beranda')" class="flex items-center gap-2.5 text-left group shrink-0">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-600 to-teal-800 flex items-center justify-center text-white shadow-md group-hover:scale-105 transition">
+  <!-- STICKY NAVBAR -->
+  <header class="glass sticky top-0 z-40 shadow-sm border-b border-slate-100">
+    <div class="max-w-7xl mx-auto px-4 lg:px-8 py-3 flex items-center justify-between gap-4">
+      <button onclick="window.navigate('beranda')" class="flex items-center gap-2.5 text-left shrink-0">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-600 to-teal-800 flex items-center justify-center text-white shadow-md">
           <i data-lucide="home" class="w-5 h-5"></i>
         </div>
         <div>
           <div class="text-xl font-extrabold leading-none tracking-tight">
-            <span class="text-[#115E59]" id="brand-part1">My</span><span class="text-orange-600" id="brand-part2">Kampung</span>
+            <span class="text-[#115E59]" id="brand-p1">My</span><span class="text-orange-600" id="brand-p2">Kampung</span>
           </div>
           <div class="text-[11px] text-slate-500 font-medium mt-0.5" id="brand-tagline">Portal Informasi Kampung</div>
         </div>
       </button>
-
-      <!-- Desktop Menu -->
-      <nav id="desktop-nav" class="hidden xl:flex items-center gap-1 text-sm font-semibold text-slate-700"></nav>
-
-      <!-- Mobile Menu Button -->
-      <button onclick="toggleMobileMenu()" class="xl:hidden p-2 rounded-xl text-slate-700 hover:bg-slate-100">
-        <i data-lucide="menu" class="w-6 h-6"></i>
-      </button>
+      <nav id="desktop-nav" class="hidden lg:flex items-center gap-1 text-sm font-semibold text-slate-700"></nav>
     </div>
-
-    <!-- Mobile Dropdown Nav -->
-    <div id="mobile-nav" class="hidden xl:hidden bg-white border-t border-slate-100 px-4 py-3 space-y-1 shadow-lg"></div>
   </header>
 
-  <!-- MAIN CONTENT CONTAINER -->
-  <main id="app-content" class="flex-1"></main>
+  <!-- MAIN CONTENT -->
+  <main id="app-content" class="flex-1">
+    <div class="max-w-7xl mx-auto px-4 py-16 text-center text-slate-400 text-sm">Menghubungkan ke Firebase...</div>
+  </main>
 
   <!-- FOOTER -->
   <footer class="bg-[#0B3F42] text-teal-100 mt-auto">
-    <div class="max-w-7xl mx-auto px-4 lg:px-8 py-10 grid grid-cols-1 md:grid-cols-3 gap-8 text-sm">
-      <div>
-        <div class="flex items-center gap-2 mb-3">
-          <div class="w-8 h-8 rounded-lg bg-amber-500 text-white flex items-center justify-center"><i data-lucide="home" class="w-4 h-4"></i></div>
-          <span class="text-lg font-extrabold text-white" id="footer-brand">MyKampung</span>
-        </div>
-        <p class="text-teal-200/80 text-xs leading-relaxed" id="footer-desc">Portal informasi resmi warga kampung yang asri, guyub, dan berdaya.</p>
-      </div>
-      <div>
-        <h4 class="font-bold text-white mb-3">Navigasi Cepat</h4>
-        <div class="grid grid-cols-2 gap-2 text-xs">
-          <button onclick="navigate('profil')" class="text-left hover:text-amber-400 transition">Profil Kampung</button>
-          <button onclick="navigate('berita')" class="text-left hover:text-amber-400 transition">Berita Kampung</button>
-          <button onclick="navigate('galeri')" class="text-left hover:text-amber-400 transition">Galeri Kampung</button>
-          <button onclick="navigate('layanan')" class="text-left hover:text-amber-400 transition">Layanan Kampung</button>
-          <button onclick="navigate('potensi')" class="text-left hover:text-amber-400 transition">Potensi Kampung</button>
-          <button onclick="navigate('agenda')" class="text-left hover:text-amber-400 transition">Agenda & Pengumuman</button>
-        </div>
-      </div>
-      <div>
-        <h4 class="font-bold text-white mb-3">Kontak Pengelola</h4>
-        <div class="space-y-1.5 text-xs text-teal-200/90" id="footer-kontak"></div>
-      </div>
-    </div>
-    <div class="border-t border-teal-800/80 py-4 text-center text-xs text-teal-300/80">
-      <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-        <span>&copy; 2026 <span id="footer-copy">MyKampung</span>. Seluruh hak cipta dilindungi.</span>
-        <a href="admin.html" class="inline-flex items-center gap-1 text-amber-300 hover:text-amber-200 font-semibold">
-          <i data-lucide="shield-check" class="w-3.5 h-3.5"></i> Panel Pengelola (Admin)
-        </a>
-      </div>
+    <div class="max-w-7xl mx-auto px-4 lg:px-8 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
+      <div>&copy; 2026 <strong id="footer-copy" class="text-white">MyKampung</strong>. Portal Informasi Warga.</div>
+      <a href="admin.html" class="inline-flex items-center gap-1.5 text-amber-300 hover:text-amber-200 font-bold">
+        <i data-lucide="shield-check" class="w-4 h-4"></i> Login Pengelola (Web Admin)
+      </a>
     </div>
   </footer>
 
+  <!-- MOBILE BOTTOM NAVIGATION BAR -->
+  <nav id="mobile-bottom-nav" class="lg:hidden fixed bottom-0 inset-x-0 z-40 glass border-t border-slate-200 px-2 py-1.5 flex items-center justify-around shadow-lg"></nav>
+
   <!-- MODAL DETAIL -->
-  <div id="detail-modal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4" onclick="if(event.target===this) closeModal()">
+  <div id="detail-modal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4" onclick="if(event.target===this) window.closeModal()">
     <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[88vh] overflow-y-auto shadow-2xl fade-in">
       <div class="sticky top-0 bg-white/95 backdrop-blur px-6 py-4 border-b border-slate-100 flex items-center justify-between">
         <span id="modal-badge" class="text-xs font-bold px-3 py-1 rounded-full bg-teal-50 text-teal-700">Detail</span>
-        <button onclick="closeModal()" class="p-1.5 rounded-full hover:bg-slate-100 text-slate-500"><i data-lucide="x" class="w-5 h-5"></i></button>
+        <button onclick="window.closeModal()" class="p-1.5 rounded-full hover:bg-slate-100 text-slate-500"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
       <div id="modal-body" class="p-6"></div>
     </div>
   </div>
 
-  <script>
-    const DB_KEY = 'MYKAMPUNG_DB_V1';
+  <script type="module">
+    // KONFIGURASI APLIKASI (MODE PRODUKSI FIREBASE)
+    const IS_PREVIEW = false;
 
-    const DEFAULT_DATA = {
-      beranda: {
-        nama: 'MyKampung',
-        domain: 'MyKampung.my.id | Portal Informasi Kampung Kita',
-        tagline: 'Portal Informasi Kampung',
-        heroKecil: 'Kampung Kita',
-        heroHighlight: 'Kampung yang Asri, Guyub, dan Berdaya',
-        heroSub: 'Informasi, kegiatan, layanan, dan potensi kampung dalam satu portal.',
-        heroImg: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1600&q=80',
-        fb: 'https://facebook.com',
-        ig: 'https://instagram.com',
-        yt: 'https://youtube.com'
-      },
-      profil: {
-        sejarah: 'Kampung kita berdiri sejak tahun 1965 sebagai permukiman agraris yang subur di lereng perbukitan. Semangat gotong royong dan kebersamaan warga menjadi fondasi utama pembangunan kampung hingga berkembang menjadi kampung mandiri yang asri dan berdaya.',
-        visi: 'Terwujudnya Kampung yang Asri, Guyub, Mandiri, dan Sejahtera Berbasis Gotong Royong.',
-        misi: [
-          'Meningkatkan kualitas pelayanan administrasi warga yang cepat dan transparan.',
-          'Mengembangkan potensi pertanian organik, wisata alam, dan UMKM lokal.',
-          'Melestarikan budaya, tradisi, serta lingkungan hidup yang bersih dan hijau.'
-        ],
-        stats: { penduduk: '2.480', kk: '715', rt: '12', rw: '4' },
-        perangkat: [
-          { id: 1, nama: 'H. Ahmad Suryana', jabatan: 'Kepala Kampung', foto: 'https://ui-avatars.com/api/?name=Ahmad+Suryana&background=0F5156&color=fff' },
-          { id: 2, nama: 'Siti Rahmawati', jabatan: 'Sekretaris Kampung', foto: 'https://ui-avatars.com/api/?name=Siti+Rahmawati&background=16A34A&color=fff' },
-          { id: 3, nama: 'Budi Santoso', jabatan: 'Kasi Pelayanan & Umum', foto: 'https://ui-avatars.com/api/?name=Budi+Santoso&background=EA580C&color=fff' },
-          { id: 4, nama: 'Dedi Kurniawan', jabatan: 'Ketua Karang Taruna', foto: 'https://ui-avatars.com/api/?name=Dedi+Kurniawan&background=0284C7&color=fff' }
-        ]
-      },
-      berita: [
-        {
-          id: 101,
-          judul: 'Gotong Royong Bersih Lingkungan Kampung',
-          kategori: 'Kegiatan Warga',
-          tanggal: '20 Nov 2026',
-          views: 1245,
-          gambar: 'https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=900&q=80',
-          ringkasan: 'Ratusan warga dari seluruh RT turun bersama membersihkan saluran air, jalan utama, dan taman kampung menjelang musim penghujan.',
-          isi: 'Semangat kebersamaan kembali terlihat pada kegiatan Gotong Royong Bersih Lingkungan Kampung yang dilaksanakan Minggu pagi. Warga membawa peralatan kebersihan masing-masing untuk membersihkan selokan, memangkas ranting pohon, dan menata taman desa.\n\nKepala Kampung mengapresiasi antusiasme seluruh warga termasuk pemuda Karang Taruna dan ibu-ibu PKK yang menyiapkan konsumsi bersama.',
-          status: 'publish'
-        },
-        {
-          id: 102,
-          judul: 'Festival Budaya Kampung Meriahkan Akhir Pekan',
-          kategori: 'Budaya',
-          tanggal: '18 Nov 2026',
-          views: 842,
-          gambar: 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?auto=format&fit=crop&w=600&q=80',
-          ringkasan: 'Pentas seni tradisional, bazar kuliner kampung, dan pawai budaya sukses menarik antusiasme ratusan pengunjung.',
-          isi: 'Festival Budaya Kampung tahunan digelar meriah di lapangan utama. Acara ini menampilkan tari tradisional, musik angklung, serta stan bazar produk UMKM dari seluruh RW.',
-          status: 'publish'
-        },
-        {
-          id: 103,
-          judul: 'Pelatihan UMKM untuk Ibu-ibu Kampung',
-          kategori: 'Ekonomi',
-          tanggal: '15 Nov 2026',
-          views: 630,
-          gambar: 'https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=600&q=80',
-          ringkasan: 'Pelatihan pengemasan produk modern dan pemasaran digital guna mendongkrak omzet olahan pangan lokal.',
-          isi: 'Sebanyak 45 pelaku usaha rumahan mengikuti pelatihan pemasaran digital dan desain kemasan di Balai Kampung. Diharapkan produk lokal kampung mampu menembus pasar yang lebih luas.',
-          status: 'publish'
-        },
-        {
-          id: 104,
-          judul: 'Penanaman Pohon di Area Sumber Air Kampung',
-          kategori: 'Lingkungan',
-          tanggal: '12 Nov 2026',
-          views: 518,
-          gambar: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=600&q=80',
-          ringkasan: 'Gerakan menanam 500 bibit pohon produktif untuk menjaga debit mata air dan keasrian bukit kampung.',
-          isi: 'Untuk menjaga kelestarian mata air yang menjadi sumber air bersih warga, pengelola kampung bersama relawan menanam 500 bibit pohon beringin, alpukat, dan durian di area hulu.',
-          status: 'publish'
-        }
-      ],
-      galeri: [
-        { id: 201, judul: 'Kerja Bakti Minggu Pagi', tipe: 'Foto', kategori: 'Kegiatan Warga', tanggal: '20 Nov 2026', url: 'https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=800&q=80' },
-        { id: 202, judul: 'Panorama Sawah Pagi Hari', tipe: 'Foto', kategori: 'Alam & Wisata', tanggal: '17 Nov 2026', url: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=800&q=80' },
-        { id: 203, judul: 'Panen Raya Padi Organik', tipe: 'Foto', kategori: 'Pertanian', tanggal: '14 Nov 2026', url: 'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=800&q=80' },
-        { id: 204, judul: 'Bazar Kuliner & Kerajinan UMKM', tipe: 'Foto', kategori: 'UMKM', tanggal: '10 Nov 2026', url: 'https://images.unsplash.com/photo-1488459716781-31db52582fe9?auto=format&fit=crop&w=800&q=80' }
-      ],
-      layanan: [
-        { id: 301, nama: 'Surat Pengantar RT/RW & Domisili', deskripsi: 'Pembuatan surat pengantar kependudukan, keterangan domisili, dan keperluan administrasi resmi.', syarat: 'Fotokopi KTP, Fotokopi KK, Surat Pengantar RT setempat.', prosedur: 'Datang ke Balai Kampung atau kirim berkas via WhatsApp petugas untuk verifikasi.', jam: 'Senin - Jumat, 08.00 - 15.00 WIB', wa: '6281234567890' },
-        { id: 302, nama: 'Surat Keterangan Usaha (SKU)', deskripsi: 'Penerbitan surat keterangan resmi untuk pelaku UMKM kampung dan pengajuan permodalan.', syarat: 'Fotokopi KTP, KK, dan foto lokasi/produk usaha.', prosedur: 'Isi formulir di loket pelayanan, surat selesai dalam 1 hari kerja.', jam: 'Senin - Jumat, 08.00 - 15.00 WIB', wa: '6281234567890' },
-        { id: 303, nama: 'Layanan Posyandu & Kesehatan Warga', deskripsi: 'Pemeriksaan kesehatan rutin balita, ibu hamil, dan lansia setiap bulan.', syarat: 'Membawa Buku KIA / Kartu KMS dan fotokopi KK.', prosedur: 'Hadir sesuai jadwal Posyandu di masing-masing RW.', jam: 'Setiap Tanggal 10, 08.00 - 12.00 WIB', wa: '6281234567890' }
-      ],
-      potensi: [
-        { id: 401, kategori: 'Pertanian', judul: 'Pertanian', subjudul: 'Padi, sayur, & hortikultura', deskripsi: 'Lahan persawahan subur seluas 120 hektare yang menghasilkan beras organik, sayuran segar, dan tanaman hortikultura unggulan.', lokasi: 'Blok Sawah Timur & Utara', gambar: 'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=700&q=80' },
-        { id: 402, kategori: 'Wisata Alam', judul: 'Wisata Alam', subjudul: 'Curug, sungai, & perbukitan', deskripsi: 'Destinasi wisata alam Curug Asri, aliran sungai jernih untuk river tubing, serta jalur trekking bukit dengan pemandangan matahari terbit.', lokasi: 'Kawasan Bukit Hijau RW 03', gambar: 'https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&w=700&q=80' },
-        { id: 403, kategori: 'UMKM', judul: 'UMKM', subjudul: 'Produk lokal & kerajinan', deskripsi: 'Keripik singkong aneka rasa, kopi sangrai kampung, madu hutan asli, serta kerajinan anyaman bambu karya warga.', lokasi: 'Sentra UMKM Balai Kampung', gambar: 'https://images.unsplash.com/photo-1488459716781-31db52582fe9?auto=format&fit=crop&w=700&q=80' },
-        { id: 404, kategori: 'Budaya', judul: 'Budaya', subjudul: 'Kesenian & tradisi', deskripsi: 'Pelestarian kesenian tradisional, sanggar tari anak kampung, grup musik tradisional, dan tradisi syukuran panen tahunan.', lokasi: 'Pendopo Budaya Kampung', gambar: 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?auto=format&fit=crop&w=700&q=80' }
-      ],
-      agenda: [
-        { id: 501, jenis: 'Agenda', judul: 'Jadwal Kerja Bakti Kampung', jadwal: 'Minggu, 23 Nov 2026 | 07.00 WIB', lokasi: 'Seluruh Lingkungan RT 01 - RT 12', keterangan: 'Diharapkan seluruh warga membawa alat kebersihan masing-masing. Fokus pembersihan saluran air dan bahu jalan.' },
-        { id: 502, jenis: 'Pengumuman', judul: 'Pendaftaran Pelatihan UMKM', jadwal: 's.d. 30 Nov 2026', lokasi: 'Loket Balai Kampung / Online', keterangan: 'Terbuka bagi seluruh warga pemilik usaha mikro. Kuota 50 peserta, gratis sertifikat dan materi pemasaran digital.' },
-        { id: 503, jenis: 'Agenda', judul: 'Rapat Warga Kampung', jadwal: 'Sabtu, 29 Nov 2026 | 19.30 WIB', lokasi: 'Aula Balai Kampung', keterangan: 'Pembahasan rencana kerja pembangunan tahun 2027 dan evaluasi keamanan lingkungan (Siskamling).' }
-      ],
-      kontak: {
-        alamat: 'Jl. Raya Kampung Asri No. 01, Kec. Sejahtera, Kab. Harmoni 45123',
-        telepon: '(021) 8899-1234',
-        whatsapp: '6281234567890',
-        email: 'halo@mykampung.my.id',
-        jam: 'Senin - Jumat: 08.00 - 15.30 WIB | Sabtu: 08.00 - 12.00 WIB'
-      },
-      pesanWarga: [
-        { id: 601, nama: 'Rina Marlina', kontak: '081298765432', subjek: 'Usulan Lampu Jalan RT 04', pesan: 'Mohon perbaikan 2 titik lampu penerangan jalan di gang melati RT 04 yang padam sejak kemarin.', tanggal: '20 Nov 2026' }
-      ]
+    const firebaseConfig = {
+      apiKey: "AIzaSyByGQOGJsgAujxq9lkEJ4UgCOMW824mF24",
+      authDomain: "juragankos-aab60.firebaseapp.com",
+      databaseURL: "https://juragankos-aab60-default-rtdb.firebaseio.com",
+      projectId: "juragankos-aab60",
+      storageBucket: "juragankos-aab60.firebasestorage.app",
+      messagingSenderId: "993946963863",
+      appId: "1:993946963863:web:ce5e709d12294898ad7ed2",
+      measurementId: "G-CNYLS85FPR"
     };
 
-    let db = {};
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
+    import { getFirestore, doc, collection, onSnapshot, addDoc, updateDoc, increment, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+      const swCode = `self.addEventListener('fetch', e => e.respondWith(fetch(e.request).catch(() => caches.match(e.request))));`;
+      const swUrl = URL.createObjectURL(new Blob([swCode], { type: 'application/javascript' }));
+      navigator.serviceWorker.register(swUrl).catch(() => {});
+    }
+
+    const app = initializeApp(firebaseConfig);
+    try { getAnalytics(app); } catch {}
+    const db = getFirestore(app);
+
     let currentPage = 'beranda';
-
-    function loadData() {
-      const saved = localStorage.getItem(DB_KEY);
-      if (!saved) {
-        localStorage.setItem(DB_KEY, JSON.stringify(DEFAULT_DATA));
-        db = JSON.parse(JSON.stringify(DEFAULT_DATA));
-      } else {
-        try {
-          db = JSON.parse(saved);
-        } catch {
-          db = JSON.parse(JSON.stringify(DEFAULT_DATA));
-        }
-      }
-    }
-
-    function saveData() {
-      localStorage.setItem(DB_KEY, JSON.stringify(db));
-    }
-
-    // Real-time Sync dari Web Admin (tab lain)
-    window.addEventListener('storage', (e) => {
-      if (e.key === DB_KEY) {
-        loadData();
-        renderHeaderFooter();
-        renderPage(currentPage);
-      }
-    });
+    const state = {
+      beranda: { nama: 'MyKampung', domain: 'MyKampung.my.id | Portal Informasi Kampung Kita', tagline: 'Portal Informasi Kampung', heroKecil: 'Kampung Kita', heroHighlight: 'Kampung yang Asri, Guyub, dan Berdaya', heroSub: 'Informasi, kegiatan, layanan, dan potensi kampung dalam satu portal.', heroImg: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1600&q=80', fb: '#', ig: '#', yt: '#' },
+      profil: { sejarah: '', visi: '', misi: [], stats: { penduduk: '0', kk: '0', rt: '0', rw: '0' }, perangkat: [] },
+      kontak: { alamat: '-', telepon: '-', whatsapp: '', email: '-', jam: '-' },
+      berita: [], galeri: [], layanan: [], potensi: [], agenda: []
+    };
 
     const NAV_ITEMS = [
-      { id: 'beranda', label: 'Beranda', icon: 'home' },
-      { id: 'profil', label: 'Profil Kampung', icon: 'users' },
-      { id: 'berita', label: 'Berita', icon: 'newspaper' },
-      { id: 'galeri', label: 'Galeri', icon: 'images' },
-      { id: 'layanan', label: 'Layanan', icon: 'clipboard-list' },
-      { id: 'potensi', label: 'Potensi', icon: 'sprout' },
-      { id: 'agenda', label: 'Agenda', icon: 'megaphone' },
-      { id: 'kontak', label: 'Kontak', icon: 'mail' }
+      { id: 'beranda', label: 'Beranda', icon: 'home', mobile: true },
+      { id: 'profil', label: 'Profil', icon: 'users', mobile: false },
+      { id: 'berita', label: 'Berita', icon: 'newspaper', mobile: true },
+      { id: 'galeri', label: 'Galeri', icon: 'images', mobile: false },
+      { id: 'layanan', label: 'Layanan', icon: 'clipboard-list', mobile: true },
+      { id: 'potensi', label: 'Potensi', icon: 'sprout', mobile: false },
+      { id: 'agenda', label: 'Agenda', icon: 'megaphone', mobile: true },
+      { id: 'kontak', label: 'Kontak', icon: 'mail', mobile: true }
     ];
 
-    function renderHeaderFooter() {
-      const b = db.beranda;
+    function initApp() {
+      onSnapshot(doc(db, 'settings', 'beranda'), snap => { if (snap.exists()) state.beranda = { ...state.beranda, ...snap.data() }; renderAll(); });
+      onSnapshot(doc(db, 'settings', 'profil'), snap => { if (snap.exists()) state.profil = { ...state.profil, ...snap.data() }; renderAll(); });
+      onSnapshot(doc(db, 'settings', 'kontak'), snap => { if (snap.exists()) state.kontak = { ...state.kontak, ...snap.data() }; renderAll(); });
+
+      const bindCol = (colName, key) => {
+        onSnapshot(query(collection(db, colName), orderBy('createdAt', 'desc')), snap => {
+          state[key] = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+          renderAll();
+        }, () => {
+          onSnapshot(collection(db, colName), snap => {
+            state[key] = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+            renderAll();
+          });
+        });
+      };
+      bindCol('berita', 'berita');
+      bindCol('galeri', 'galeri');
+      bindCol('layanan', 'layanan');
+      bindCol('potensi', 'potensi');
+      bindCol('agenda', 'agenda');
+      renderAll();
+    }
+
+    function renderAll() {
+      const b = state.beranda;
       document.title = `${b.nama} — ${b.tagline}`;
       document.getElementById('top-domain').textContent = b.domain;
       document.getElementById('brand-tagline').textContent = b.tagline;
-      document.getElementById('footer-brand').textContent = b.nama;
       document.getElementById('footer-copy').textContent = b.nama;
-      document.getElementById('footer-desc').textContent = b.heroSub;
-
-      // Split brand name visually if starts with "My"
       if (b.nama.toLowerCase().startsWith('my') && b.nama.length > 2) {
-        document.getElementById('brand-part1').textContent = b.nama.slice(0, 2);
-        document.getElementById('brand-part2').textContent = b.nama.slice(2);
+        document.getElementById('brand-p1').textContent = b.nama.slice(0, 2);
+        document.getElementById('brand-p2').textContent = b.nama.slice(2);
       } else {
-        document.getElementById('brand-part1').textContent = b.nama;
-        document.getElementById('brand-part2').textContent = '';
+        document.getElementById('brand-p1').textContent = b.nama;
+        document.getElementById('brand-p2').textContent = '';
       }
-
       document.getElementById('soc-fb').href = b.fb || '#';
       document.getElementById('soc-ig').href = b.ig || '#';
       document.getElementById('soc-yt').href = b.yt || '#';
 
-      const k = db.kontak;
-      document.getElementById('footer-kontak').innerHTML = `
-        <p class="flex items-start gap-2"><i data-lucide="map-pin" class="w-4 h-4 shrink-0 text-amber-400 mt-0.5"></i><span>${k.alamat}</span></p>
-        <p class="flex items-center gap-2"><i data-lucide="phone" class="w-4 h-4 shrink-0 text-amber-400"></i><span>${k.telepon}</span></p>
-        <p class="flex items-center gap-2"><i data-lucide="mail" class="w-4 h-4 shrink-0 text-amber-400"></i><span>${k.email}</span></p>
-      `;
-
-      // Render Navigation
-      const deskNav = document.getElementById('desktop-nav');
-      const mobNav = document.getElementById('mobile-nav');
-      deskNav.innerHTML = NAV_ITEMS.map(item => {
-        const active = currentPage === item.id;
-        return `<button onclick="navigate('${item.id}')" class="px-3.5 py-2 rounded-xl flex items-center gap-1.5 transition ${active ? 'bg-[#16695E] text-white shadow-sm' : 'text-slate-700 hover:bg-teal-50 hover:text-teal-800'}">
+      document.getElementById('desktop-nav').innerHTML = NAV_ITEMS.map(item => `
+        <button onclick="window.navigate('${item.id}')" class="px-3.5 py-2 rounded-xl flex items-center gap-1.5 transition ${currentPage===item.id ? 'bg-[#16695E] text-white shadow-sm' : 'text-slate-700 hover:bg-teal-50 hover:text-teal-800'}">
           <i data-lucide="${item.icon}" class="w-4 h-4"></i><span>${item.label}</span>
-        </button>`;
-      }).join('');
+        </button>`).join('');
 
-      mobNav.innerHTML = NAV_ITEMS.map(item => {
-        const active = currentPage === item.id;
-        return `<button onclick="navigate('${item.id}'); toggleMobileMenu(false)" class="w-full px-4 py-2.5 rounded-xl flex items-center gap-3 text-sm font-semibold transition ${active ? 'bg-[#16695E] text-white' : 'text-slate-700 hover:bg-slate-50'}">
-          <i data-lucide="${item.icon}" class="w-4 h-4"></i><span>${item.label}</span>
-        </button>`;
-      }).join('');
+      document.getElementById('mobile-bottom-nav').innerHTML = NAV_ITEMS.filter(i => i.mobile).map(item => `
+        <button onclick="window.navigate('${item.id}')" class="flex flex-col items-center gap-0.5 px-2 py-1 rounded-xl text-[10px] font-bold transition ${currentPage===item.id ? 'text-[#115E59] bg-teal-50' : 'text-slate-500'}">
+          <i data-lucide="${item.icon}" class="w-5 h-5"></i><span>${item.label}</span>
+        </button>`).join('');
 
+      const c = document.getElementById('app-content');
+      if (currentPage === 'beranda') c.innerHTML = viewBeranda();
+      else if (currentPage === 'profil') c.innerHTML = viewProfil();
+      else if (currentPage === 'berita') c.innerHTML = viewBerita();
+      else if (currentPage === 'galeri') c.innerHTML = viewGaleri();
+      else if (currentPage === 'layanan') c.innerHTML = viewLayanan();
+      else if (currentPage === 'potensi') c.innerHTML = viewPotensi();
+      else if (currentPage === 'agenda') c.innerHTML = viewAgenda();
+      else if (currentPage === 'kontak') c.innerHTML = viewKontak();
       lucide.createIcons();
     }
 
-    function toggleMobileMenu(force) {
-      const el = document.getElementById('mobile-nav');
-      if (typeof force === 'boolean') el.classList.toggle('hidden', !force);
-      else el.classList.toggle('hidden');
-    }
-
-    function navigate(page) {
-      currentPage = page;
-      document.getElementById('global-search').value = '';
-      renderHeaderFooter();
-      renderPage(page);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function renderPage(page) {
-      const container = document.getElementById('app-content');
-      if (page === 'beranda') container.innerHTML = viewBeranda();
-      else if (page === 'profil') container.innerHTML = viewProfil();
-      else if (page === 'berita') container.innerHTML = viewBerita();
-      else if (page === 'galeri') container.innerHTML = viewGaleri();
-      else if (page === 'layanan') container.innerHTML = viewLayanan();
-      else if (page === 'potensi') container.innerHTML = viewPotensi();
-      else if (page === 'agenda') container.innerHTML = viewAgenda();
-      else if (page === 'kontak') container.innerHTML = viewKontak();
-      lucide.createIcons();
-    }
-
-    // ================= VIEW: BERANDA =================
     function viewBeranda() {
-      const b = db.beranda;
-      const publishedBerita = db.berita.filter(x => x.status !== 'draft');
-      const featured = publishedBerita[0];
-      const sideBerita = publishedBerita.slice(1, 4);
-      const topAgenda = db.agenda.slice(0, 3);
-      const topPotensi = db.potensi.slice(0, 4);
-
-      const potensiIcons = {
-        'Pertanian': { icon: 'wheat', color: 'text-emerald-600' },
-        'Wisata Alam': { icon: 'mountain', color: 'text-teal-700' },
-        'UMKM': { icon: 'store', color: 'text-orange-600' },
-        'Budaya': { icon: 'sparkles', color: 'text-amber-600' }
-      };
+      const b = state.beranda;
+      const pub = state.berita.filter(x => x.status !== 'draft');
+      const feat = pub[0];
+      const side = pub.slice(1, 4);
+      const ags = state.agenda.slice(0, 3);
+      const pots = state.potensi.slice(0, 4);
+      const pIcons = { 'Pertanian': 'wheat', 'Wisata Alam': 'mountain', 'UMKM': 'store', 'Budaya': 'sparkles' };
 
       return `
         <div class="fade-in">
-          <!-- HERO BANNER -->
-          <section class="relative min-h-[390px] md:min-h-[450px] flex items-center overflow-hidden">
-            <img src="${b.heroImg}" alt="Kampung" class="absolute inset-0 w-full h-full object-cover" />
+          <section class="relative min-h-[380px] md:min-h-[440px] flex items-center overflow-hidden">
+            <img src="${b.heroImg}" class="absolute inset-0 w-full h-full object-cover" />
             <div class="absolute inset-0 hero-gradient"></div>
             <div class="relative z-10 max-w-7xl mx-auto px-4 lg:px-8 py-14 pb-24 w-full">
               <div class="max-w-xl text-white">
-                <p class="text-xl md:text-2xl font-bold text-white/95 mb-1">${b.heroKecil}</p>
-                <h1 class="text-3xl md:text-5xl font-extrabold text-[#FACC15] leading-tight tracking-tight mb-4">${b.heroHighlight}</h1>
-                <p class="text-sm md:text-base text-teal-50/95 leading-relaxed mb-7 max-w-lg">${b.heroSub}</p>
-                <div class="flex flex-wrap items-center gap-3">
-                  <button onclick="navigate('potensi')" class="px-6 py-2.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white font-bold text-sm shadow-lg flex items-center gap-2 transition">
-                    Jelajahi Sekarang <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                  </button>
-                  <button onclick="navigate('profil')" class="px-6 py-2.5 rounded-full border border-white/75 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white font-semibold text-sm flex items-center gap-2 transition">
-                    <i data-lucide="play-circle" class="w-4 h-4"></i> Profil Kampung
-                  </button>
+                <p class="text-xl md:text-2xl font-bold mb-1">${b.heroKecil}</p>
+                <h1 class="text-3xl md:text-5xl font-extrabold text-[#FACC15] leading-tight mb-4">${b.heroHighlight}</h1>
+                <p class="text-sm md:text-base text-teal-50/95 mb-7 max-w-lg">${b.heroSub}</p>
+                <div class="flex flex-wrap gap-3">
+                  <button onclick="window.navigate('potensi')" class="px-6 py-2.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-600 text-white font-bold text-sm shadow-lg flex items-center gap-2">Jelajahi Sekarang <i data-lucide="arrow-right" class="w-4 h-4"></i></button>
+                  <button onclick="window.navigate('profil')" class="px-6 py-2.5 rounded-full border border-white/75 bg-white/10 backdrop-blur-sm text-white font-semibold text-sm flex items-center gap-2"><i data-lucide="play-circle" class="w-4 h-4"></i> Profil Kampung</button>
                 </div>
               </div>
             </div>
           </section>
 
-          <!-- 5 FLOATING QUICK ACCESS CARDS -->
           <section class="max-w-7xl mx-auto px-4 lg:px-8 -mt-12 relative z-20">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-              ${quickCard('profil', 'bg-violet-600', 'users', 'Profil Kampung', 'Sejarah, budaya, dan kehidupan warga')}
-              ${quickCard('berita', 'bg-sky-600', 'newspaper', 'Berita Kampung', 'Kabar terbaru & agenda kegiatan')}
-              ${quickCard('galeri', 'bg-pink-500', 'image', 'Galeri Kampung', 'Foto & video aktivitas warga')}
-              ${quickCard('layanan', 'bg-amber-500', 'clipboard-list', 'Layanan Kampung', 'Informasi & layanan untuk warga')}
-              ${quickCard('potensi', 'bg-lime-600', 'sprout', 'Potensi Kampung', 'Wisata, UMKM, pertanian, dan lainnya')}
+              ${qCard('profil','bg-violet-600','users','Profil Kampung','Sejarah, budaya, dan kehidupan warga')}
+              ${qCard('berita','bg-sky-600','newspaper','Berita Kampung','Kabar terbaru & agenda kegiatan')}
+              ${qCard('galeri','bg-pink-500','image','Galeri Kampung','Foto & video aktivitas warga')}
+              ${qCard('layanan','bg-amber-500','clipboard-list','Layanan Kampung','Informasi & layanan untuk warga')}
+              ${qCard('potensi','bg-lime-600','sprout','Potensi Kampung','Wisata, UMKM, pertanian, dan lainnya')}
             </div>
           </section>
 
-          <!-- BERITA TERBARU & PENGUMUMAN (8:4 ASYMMETRIC GRID) -->
           <section class="max-w-7xl mx-auto px-4 lg:px-8 py-12">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-7 items-start">
-              <!-- Kiri: Berita Terbaru (8 Col) -->
               <div class="lg:col-span-8">
                 <div class="flex items-center justify-between mb-5">
-                  <h2 class="text-xl md:text-2xl font-extrabold text-slate-900 flex items-center gap-2">
-                    <i data-lucide="leaf" class="w-6 h-6 text-emerald-600"></i> Berita Terbaru
-                  </h2>
-                  <button onclick="navigate('berita')" class="text-sm font-bold text-[#115E59] hover:text-orange-600 flex items-center gap-1 transition">
-                    Lihat Semua <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                  </button>
+                  <h2 class="text-xl md:text-2xl font-extrabold flex items-center gap-2"><i data-lucide="leaf" class="w-6 h-6 text-emerald-600"></i> Berita Terbaru</h2>
+                  <button onclick="window.navigate('berita')" class="text-sm font-bold text-[#115E59] hover:text-orange-600">Lihat Semua &rarr;</button>
                 </div>
-
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-5">
-                  <!-- Featured Berita -->
                   <div class="md:col-span-7">
-                    ${featured ? `
-                      <article onclick="openBerita(${featured.id})" class="bg-white rounded-2xl shadow-sm hover:shadow-lg border border-slate-100 overflow-hidden cursor-pointer transition group h-full flex flex-col">
-                        <div class="relative h-56 overflow-hidden">
-                          <img src="${featured.gambar}" alt="${featured.judul}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
-                        </div>
-                        <div class="p-5 flex-1 flex flex-col">
-                          <span class="-mt-9 mb-3 relative z-10 inline-block w-max px-3.5 py-1 rounded-full bg-emerald-600 text-white text-xs font-bold shadow">${featured.kategori}</span>
-                          <h3 class="text-lg md:text-xl font-extrabold text-slate-900 group-hover:text-[#115E59] leading-snug mb-2">${featured.judul}</h3>
-                          <p class="text-xs text-slate-600 line-clamp-2 mb-4 flex-1">${featured.ringkasan}</p>
+                    ${feat ? `
+                      <article onclick="window.openBerita('${feat.id}')" class="bg-white rounded-2xl shadow-sm hover:shadow-lg border border-slate-100 overflow-hidden cursor-pointer transition">
+                        <img src="${feat.gambar}" class="w-full h-56 object-cover" />
+                        <div class="p-5">
+                          <span class="-mt-9 mb-3 relative z-10 inline-block px-3.5 py-1 rounded-full bg-emerald-600 text-white text-xs font-bold shadow">${feat.kategori}</span>
+                          <h3 class="text-lg font-extrabold text-slate-900 mb-2">${feat.judul}</h3>
+                          <p class="text-xs text-slate-600 line-clamp-2 mb-4">${feat.ringkasan}</p>
                           <div class="flex items-center gap-4 text-xs text-slate-500 pt-3 border-t border-slate-100">
-                            <span class="flex items-center gap-1.5"><i data-lucide="calendar" class="w-3.5 h-3.5"></i> ${featured.tanggal}</span>
-                            <span class="flex items-center gap-1.5"><i data-lucide="eye" class="w-3.5 h-3.5"></i> ${Number(featured.views).toLocaleString('id-ID')}</span>
+                            <span class="flex items-center gap-1"><i data-lucide="calendar" class="w-3.5 h-3.5"></i> ${feat.tanggal}</span>
+                            <span class="flex items-center gap-1"><i data-lucide="eye" class="w-3.5 h-3.5"></i> ${Number(feat.views||0).toLocaleString('id-ID')}</span>
                           </div>
                         </div>
-                      </article>
-                    ` : '<div class="bg-white p-8 rounded-2xl text-center text-slate-400">Belum ada berita.</div>'}
+                      </article>` : '<div class="bg-white p-8 rounded-2xl text-center text-slate-400 text-sm">Belum ada berita dipublikasikan.</div>'}
                   </div>
-
-                  <!-- 3 Side Berita -->
                   <div class="md:col-span-5 flex flex-col gap-3.5">
-                    ${sideBerita.map(item => `
-                      <article onclick="openBerita(${item.id})" class="bg-white rounded-2xl p-2.5 shadow-sm hover:shadow-md border border-slate-100 flex gap-3 items-center cursor-pointer transition group">
-                        <img src="${item.gambar}" alt="${item.judul}" class="w-24 h-20 object-cover rounded-xl shrink-0 group-hover:opacity-90" />
+                    ${side.map(item => `
+                      <article onclick="window.openBerita('${item.id}')" class="bg-white rounded-2xl p-2.5 shadow-sm hover:shadow-md border border-slate-100 flex gap-3 items-center cursor-pointer transition">
+                        <img src="${item.gambar}" class="w-24 h-20 object-cover rounded-xl shrink-0" />
                         <div class="min-w-0">
-                          <h4 class="text-sm font-bold text-slate-800 group-hover:text-[#115E59] leading-snug line-clamp-2 mb-1.5">${item.judul}</h4>
-                          <div class="flex items-center gap-1 text-xs text-slate-500">
-                            <i data-lucide="calendar" class="w-3.5 h-3.5"></i> <span>${item.tanggal}</span>
-                          </div>
+                          <h4 class="text-sm font-bold text-slate-800 line-clamp-2 mb-1">${item.judul}</h4>
+                          <div class="text-xs text-slate-500">${item.tanggal}</div>
                         </div>
-                      </article>
-                    `).join('')}
+                      </article>`).join('')}
                   </div>
                 </div>
               </div>
 
-              <!-- Kanan: Panel Pengumuman (4 Col) -->
               <div class="lg:col-span-4">
                 <div class="bg-white rounded-2xl shadow-md border border-slate-100 overflow-hidden">
                   <div class="bg-[#135D56] px-5 py-3.5 flex items-center justify-between text-white">
-                    <div class="flex items-center gap-2.5 font-bold text-base">
-                      <i data-lucide="megaphone" class="w-5 h-5 text-amber-400"></i>
-                      <span>Pengumuman</span>
-                    </div>
-                    <button onclick="navigate('agenda')" class="text-xs text-teal-100 hover:text-amber-300 font-medium">Semua &rarr;</button>
+                    <div class="flex items-center gap-2 font-bold"><i data-lucide="megaphone" class="w-5 h-5 text-amber-400"></i> Pengumuman</div>
+                    <button onclick="window.navigate('agenda')" class="text-xs text-teal-100 hover:text-amber-300">Semua &rarr;</button>
                   </div>
                   <div class="divide-y divide-slate-100">
-                    ${topAgenda.map((ag, idx) => {
-                      const ic = idx === 0 ? 'calendar-days' : idx === 1 ? 'users' : 'bell';
-                      return `
-                        <button onclick="openAgenda(${ag.id})" class="w-full text-left px-5 py-4 hover:bg-slate-50 flex items-center gap-3.5 transition group">
-                          <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-500 flex items-center justify-center shrink-0">
-                            <i data-lucide="${ic}" class="w-5 h-5"></i>
-                          </div>
-                          <div class="flex-1 min-w-0">
-                            <div class="text-sm font-bold text-slate-800 group-hover:text-[#115E59] truncate">${ag.judul}</div>
-                            <div class="text-xs text-slate-500 mt-0.5 truncate">${ag.jadwal}</div>
-                          </div>
-                          <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400 group-hover:translate-x-0.5 transition shrink-0"></i>
-                        </button>
-                      `;
-                    }).join('') || '<div class="p-6 text-center text-xs text-slate-400">Belum ada pengumuman.</div>'}
+                    ${ags.map(ag => `
+                      <button onclick="window.openAgenda('${ag.id}')" class="w-full text-left px-5 py-4 hover:bg-slate-50 flex items-center gap-3 transition">
+                        <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-500 flex items-center justify-center shrink-0"><i data-lucide="bell" class="w-5 h-5"></i></div>
+                        <div class="flex-1 min-w-0">
+                          <div class="text-sm font-bold text-slate-800 truncate">${ag.judul}</div>
+                          <div class="text-xs text-slate-500 truncate">${ag.jadwal}</div>
+                        </div>
+                        <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
+                      </button>`).join('') || '<div class="p-6 text-center text-xs text-slate-400">Belum ada pengumuman.</div>'}
                   </div>
                 </div>
               </div>
             </div>
           </section>
 
-          <!-- WAVE BANNER: POTENSI UNGGULAN KAMPUNG -->
           <section class="relative mt-4">
-            <svg viewBox="0 0 1440 70" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-10 md:h-16 block -mb-1">
-              <path d="M0 32C240 0 480 0 720 32C960 64 1200 64 1440 24V70H0V32Z" fill="#115E59"/>
-            </svg>
+            <svg viewBox="0 0 1440 70" fill="none" class="w-full h-10 md:h-16 block -mb-1"><path d="M0 32C240 0 480 0 720 32C960 64 1200 64 1440 24V70H0V32Z" fill="#115E59"/></svg>
             <div class="bg-[#115E59] text-white pt-4 pb-12">
               <div class="max-w-7xl mx-auto px-4 lg:px-8">
-                <div class="flex items-center justify-between mb-7">
-                  <h2 class="text-xl md:text-2xl font-extrabold flex items-center gap-2">
-                    <i data-lucide="sprout" class="w-6 h-6 text-lime-400"></i> Potensi Unggulan Kampung
-                  </h2>
-                  <button onclick="navigate('potensi')" class="text-xs sm:text-sm font-semibold text-amber-300 hover:text-amber-200 flex items-center gap-1">
-                    Eksplor Potensi <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                  </button>
-                </div>
+                <h2 class="text-xl md:text-2xl font-extrabold flex items-center gap-2 mb-7"><i data-lucide="sprout" class="w-6 h-6 text-lime-400"></i> Potensi Unggulan Kampung</h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                  ${topPotensi.map(p => {
-                    const ic = potensiIcons[p.kategori] || { icon: 'star', color: 'text-teal-700' };
-                    return `
-                      <div onclick="navigate('potensi')" class="flex items-center gap-4 p-3 rounded-2xl hover:bg-white/10 cursor-pointer transition">
-                        <div class="w-14 h-14 rounded-full bg-white shadow-md flex items-center justify-center shrink-0 ${ic.color}">
-                          <i data-lucide="${ic.icon}" class="w-7 h-7"></i>
-                        </div>
-                        <div>
-                          <h3 class="font-bold text-base text-white">${p.judul}</h3>
-                          <p class="text-xs text-teal-100/90 mt-0.5">${p.subjudul || p.kategori}</p>
-                        </div>
-                      </div>
-                    `;
-                  }).join('')}
+                  ${pots.map(p => `
+                    <div onclick="window.navigate('potensi')" class="flex items-center gap-4 p-3 rounded-2xl hover:bg-white/10 cursor-pointer transition">
+                      <div class="w-14 h-14 rounded-full bg-white text-teal-700 shadow-md flex items-center justify-center shrink-0"><i data-lucide="${pIcons[p.kategori]||'star'}" class="w-7 h-7"></i></div>
+                      <div><h3 class="font-bold text-base">${p.judul}</h3><p class="text-xs text-teal-100/90">${p.subjudul||p.kategori}</p></div>
+                    </div>`).join('') || '<p class="text-xs text-teal-200">Belum ada data potensi.</p>'}
                 </div>
               </div>
             </div>
           </section>
-        </div>
-      `;
+        </div>`;
     }
 
-    function quickCard(target, bgColor, icon, title, desc) {
-      return `
-        <button onclick="navigate('${target}')" class="bg-white rounded-2xl p-4 shadow-md hover:shadow-lg border border-slate-100 flex items-center gap-3.5 text-left hover:-translate-y-1 transition duration-200">
-          <div class="w-12 h-12 rounded-xl ${bgColor} text-white flex items-center justify-center shrink-0 shadow-sm">
-            <i data-lucide="${icon}" class="w-6 h-6"></i>
-          </div>
-          <div class="min-w-0">
-            <div class="text-sm font-extrabold text-slate-900 truncate">${title}</div>
-            <div class="text-[11px] text-slate-500 leading-snug mt-0.5 line-clamp-2">${desc}</div>
-          </div>
-        </button>
-      `;
+    function qCard(t, bg, ic, title, desc) {
+      return `<button onclick="window.navigate('${t}')" class="bg-white rounded-2xl p-4 shadow-md hover:shadow-lg border border-slate-100 flex items-center gap-3 text-left hover:-translate-y-1 transition">
+        <div class="w-12 h-12 rounded-xl ${bg} text-white flex items-center justify-center shrink-0"><i data-lucide="${ic}" class="w-6 h-6"></i></div>
+        <div class="min-w-0"><div class="text-sm font-extrabold text-slate-900 truncate">${title}</div><div class="text-[11px] text-slate-500 line-clamp-2">${desc}</div></div>
+      </button>`;
     }
 
-    // ================= VIEW: PROFIL KAMPUNG =================
     function viewProfil() {
-      const p = db.profil;
-      return `
-        <div class="max-w-7xl mx-auto px-4 lg:px-8 py-10 fade-in">
-          ${pageHeader('Profil Kampung', 'Mengenal sejarah, visi misi, demografi, dan struktur pengelola kampung kita.')}
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            ${statBox('Total Penduduk', p.stats.penduduk, 'users', 'bg-teal-600')}
-            ${statBox('Kepala Keluarga', p.stats.kk, 'home', 'bg-amber-500')}
-            ${statBox('Jumlah RT', p.stats.rt, 'map', 'bg-emerald-600')}
-            ${statBox('Jumlah RW', p.stats.rw, 'layers', 'bg-sky-600')}
-          </div>
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
-            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
-              <h3 class="text-lg font-extrabold text-[#115E59] mb-3 flex items-center gap-2"><i data-lucide="book-open" class="w-5 h-5"></i> Sejarah Singkat</h3>
-              <p class="text-sm text-slate-600 leading-relaxed whitespace-pre-line">${p.sejarah}</p>
-            </div>
-            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
-              <h3 class="text-lg font-extrabold text-[#115E59] mb-3 flex items-center gap-2"><i data-lucide="target" class="w-5 h-5"></i> Visi & Misi</h3>
-              <div class="p-3.5 rounded-xl bg-teal-50 border border-teal-100 text-sm font-bold text-teal-900 mb-4">"${p.visi}"</div>
-              <ul class="space-y-2 text-sm text-slate-600">
-                ${p.misi.map(m => `<li class="flex items-start gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i><span>${m}</span></li>`).join('')}
-              </ul>
-            </div>
-          </div>
-          <h3 class="text-xl font-extrabold text-slate-900 mb-5">Struktur Pengelola & Perangkat Kampung</h3>
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            ${p.perangkat.map(org => `
-              <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 text-center">
-                <img src="${org.foto}" alt="${org.nama}" class="w-20 h-20 rounded-full mx-auto object-cover mb-3 ring-4 ring-teal-50" />
-                <div class="font-bold text-slate-900">${org.nama}</div>
-                <div class="text-xs font-semibold text-teal-700 mt-0.5">${org.jabatan}</div>
-              </div>
-            `).join('')}
-          </div>
+      const p = state.profil;
+      return `<div class="max-w-7xl mx-auto px-4 lg:px-8 py-10 fade-in">
+        <h1 class="text-2xl font-extrabold mb-6">Profil Kampung</h1>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          ${[['Penduduk', p.stats?.penduduk||'0'],['Kepala Keluarga', p.stats?.kk||'0'],['RT', p.stats?.rt||'0'],['RW', p.stats?.rw||'0']].map(x => `<div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100"><div class="text-2xl font-extrabold text-[#115E59]">${x[1]}</div><div class="text-xs text-slate-500">${x[0]}</div></div>`).join('')}
         </div>
-      `;
-    }
-
-    function statBox(label, val, icon, bg) {
-      return `<div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex items-center gap-3.5">
-        <div class="w-11 h-11 rounded-xl ${bg} text-white flex items-center justify-center shrink-0"><i data-lucide="${icon}" class="w-5 h-5"></i></div>
-        <div><div class="text-xl font-extrabold text-slate-900">${val}</div><div class="text-xs text-slate-500">${label}</div></div>
+        <div class="grid md:grid-cols-2 gap-6 mb-8">
+          <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100"><h3 class="font-extrabold text-[#115E59] mb-2">Sejarah Kampung</h3><p class="text-sm text-slate-600 whitespace-pre-line">${p.sejarah || 'Belum ada data sejarah.'}</p></div>
+          <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100"><h3 class="font-extrabold text-[#115E59] mb-2">Visi & Misi</h3><p class="text-sm font-bold text-teal-900 bg-teal-50 p-3 rounded-xl mb-3">${p.visi || '-'}</p><ul class="list-disc pl-5 text-sm text-slate-600 space-y-1">${(p.misi||[]).map(m => `<li>${m}</li>`).join('')}</ul></div>
+        </div>
       </div>`;
     }
 
-    // ================= VIEW: BERITA KAMPUNG =================
     function viewBerita() {
-      const list = db.berita.filter(x => x.status !== 'draft');
-      return `
-        <div class="max-w-7xl mx-auto px-4 lg:px-8 py-10 fade-in">
-          ${pageHeader('Berita Kampung', 'Kabar terbaru, dokumentasi kegiatan warga, dan informasi perkembangan kampung.')}
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            ${list.map(item => `
-              <article onclick="openBerita(${item.id})" class="bg-white rounded-2xl shadow-sm hover:shadow-lg border border-slate-100 overflow-hidden cursor-pointer transition group flex flex-col">
-                <div class="h-48 overflow-hidden relative">
-                  <img src="${item.gambar}" alt="${item.judul}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
-                  <span class="absolute top-3 left-3 px-3 py-1 rounded-full bg-emerald-600 text-white text-xs font-bold shadow">${item.kategori}</span>
-                </div>
-                <div class="p-5 flex-1 flex flex-col">
-                  <h3 class="font-extrabold text-slate-900 group-hover:text-[#115E59] leading-snug mb-2">${item.judul}</h3>
-                  <p class="text-xs text-slate-600 line-clamp-3 mb-4 flex-1">${item.ringkasan}</p>
-                  <div class="flex items-center justify-between text-xs text-slate-500 pt-3 border-t border-slate-100">
-                    <span class="flex items-center gap-1"><i data-lucide="calendar" class="w-3.5 h-3.5"></i> ${item.tanggal}</span>
-                    <span class="flex items-center gap-1"><i data-lucide="eye" class="w-3.5 h-3.5"></i> ${Number(item.views).toLocaleString('id-ID')}</span>
-                  </div>
-                </div>
-              </article>
-            `).join('') || '<p class="text-slate-400">Belum ada berita dipublikasikan.</p>'}
-          </div>
-        </div>
-      `;
+      const list = state.berita.filter(x => x.status !== 'draft');
+      return `<div class="max-w-7xl mx-auto px-4 lg:px-8 py-10 fade-in">
+        <h1 class="text-2xl font-extrabold mb-6">Berita Kampung</h1>
+        <div class="grid md:grid-cols-3 gap-6">${list.map(b => `
+          <article onclick="window.openBerita('${b.id}')" class="bg-white rounded-2xl shadow-sm hover:shadow-lg border border-slate-100 overflow-hidden cursor-pointer transition">
+            <img src="${b.gambar}" class="w-full h-44 object-cover" />
+            <div class="p-5"><span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full">${b.kategori}</span><h3 class="font-extrabold mt-2 mb-1.5">${b.judul}</h3><p class="text-xs text-slate-600 line-clamp-2 mb-3">${b.ringkasan}</p><div class="text-xs text-slate-400">${b.tanggal} • ${b.views||0} dibaca</div></div>
+          </article>`).join('') || '<p class="text-slate-400 text-sm">Belum ada berita.</p>'}</div>
+      </div>`;
     }
 
-    // ================= VIEW: GALERI KAMPUNG =================
     function viewGaleri() {
-      return `
-        <div class="max-w-7xl mx-auto px-4 lg:px-8 py-10 fade-in">
-          ${pageHeader('Galeri Kampung', 'Dokumentasi foto dan video aktivitas warga, keindahan alam, serta budaya kampung.')}
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            ${db.galeri.map(g => `
-              <div onclick="openGaleri(${g.id})" class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg border border-slate-100 cursor-pointer group transition">
-                <div class="h-48 overflow-hidden relative bg-slate-100">
-                  <img src="${g.url}" alt="${g.judul}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
-                  <span class="absolute top-2.5 right-2.5 px-2.5 py-0.5 rounded-full bg-slate-900/70 text-white text-[11px] font-semibold">${g.tipe}</span>
-                </div>
-                <div class="p-4">
-                  <div class="text-xs font-semibold text-teal-700">${g.kategori}</div>
-                  <div class="font-bold text-sm text-slate-900 mt-0.5">${g.judul}</div>
-                  <div class="text-[11px] text-slate-400 mt-1">${g.tanggal}</div>
-                </div>
-              </div>
-            `).join('') || '<p class="text-slate-400">Belum ada media di galeri.</p>'}
-          </div>
-        </div>
-      `;
+      return `<div class="max-w-7xl mx-auto px-4 lg:px-8 py-10 fade-in">
+        <h1 class="text-2xl font-extrabold mb-6">Galeri Kampung</h1>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">${state.galeri.map(g => `
+          <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-100"><img src="${g.url}" class="w-full h-44 object-cover" /><div class="p-4"><div class="text-xs font-bold text-teal-700">${g.kategori} (${g.tipe})</div><div class="font-bold text-sm mt-0.5">${g.judul}</div></div></div>`).join('') || '<p class="text-slate-400 text-sm">Belum ada galeri.</p>'}</div>
+      </div>`;
     }
 
-    // ================= VIEW: LAYANAN KAMPUNG =================
     function viewLayanan() {
-      return `
-        <div class="max-w-7xl mx-auto px-4 lg:px-8 py-10 fade-in">
-          ${pageHeader('Layanan Kampung', 'Informasi prosedur administrasi, persyaratan berkas, dan layanan publik untuk warga.')}
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            ${db.layanan.map(l => `
-              <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 flex flex-col">
-                <div class="w-11 h-11 rounded-xl bg-amber-500 text-white flex items-center justify-center mb-4">
-                  <i data-lucide="file-check-2" class="w-6 h-6"></i>
-                </div>
-                <h3 class="text-lg font-extrabold text-slate-900 mb-2">${l.nama}</h3>
-                <p class="text-xs text-slate-600 mb-4 leading-relaxed">${l.deskripsi}</p>
-                <div class="space-y-2.5 text-xs bg-slate-50 p-3.5 rounded-xl mb-5 flex-1">
-                  <div><strong class="text-slate-800">Persyaratan:</strong> <span class="text-slate-600">${l.syarat}</span></div>
-                  <div><strong class="text-slate-800">Prosedur:</strong> <span class="text-slate-600">${l.prosedur}</span></div>
-                  <div><strong class="text-slate-800">Jam Layanan:</strong> <span class="text-slate-600">${l.jam}</span></div>
-                </div>
-                <a href="https://wa.me/${l.wa}?text=${encodeURIComponent('Halo Pengelola Kampung, saya ingin menanyakan layanan: ' + l.nama)}" target="_blank" class="w-full py-2.5 rounded-xl bg-[#115E59] hover:bg-teal-800 text-white text-xs font-bold flex items-center justify-center gap-2 transition">
-                  <i data-lucide="message-circle" class="w-4 h-4"></i> Hubungi Petugas via WhatsApp
-                </a>
-              </div>
-            `).join('') || '<p class="text-slate-400">Belum ada data layanan.</p>'}
-          </div>
-        </div>
-      `;
+      return `<div class="max-w-7xl mx-auto px-4 lg:px-8 py-10 fade-in">
+        <h1 class="text-2xl font-extrabold mb-6">Layanan Kampung</h1>
+        <div class="grid md:grid-cols-3 gap-6">${state.layanan.map(l => `
+          <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 flex flex-col">
+            <h3 class="font-extrabold text-lg mb-2">${l.nama}</h3>
+            <p class="text-xs text-slate-600 mb-3">${l.deskripsi}</p>
+            <div class="text-xs bg-slate-50 p-3 rounded-xl space-y-1.5 mb-4 flex-1">
+              <div><strong>Syarat:</strong> ${l.syarat}</div><div><strong>Prosedur:</strong> ${l.prosedur}</div><div><strong>Jam:</strong> ${l.jam}</div>
+            </div>
+            <a href="https://wa.me/${l.wa}?text=${encodeURIComponent('Halo, saya butuh info layanan: '+l.nama)}" target="_blank" class="py-2.5 rounded-xl bg-[#115E59] text-white text-xs font-bold text-center">Hubungi via WhatsApp</a>
+          </div>`).join('') || '<p class="text-slate-400 text-sm">Belum ada layanan.</p>'}</div>
+      </div>`;
     }
 
-    // ================= VIEW: POTENSI KAMPUNG =================
     function viewPotensi() {
-      return `
-        <div class="max-w-7xl mx-auto px-4 lg:px-8 py-10 fade-in">
-          ${pageHeader('Potensi Kampung', 'Kekayaan sumber daya alam, produk UMKM unggulan, pariwisata, dan tradisi budaya lokal.')}
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            ${db.potensi.map(p => `
-              <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-100 flex flex-col sm:flex-row">
-                <img src="${p.gambar}" alt="${p.judul}" class="sm:w-48 h-48 sm:h-auto object-cover shrink-0" />
-                <div class="p-5 flex flex-col justify-between">
-                  <div>
-                    <span class="inline-block px-3 py-0.5 rounded-full bg-teal-50 text-teal-800 text-xs font-bold mb-2">${p.kategori}</span>
-                    <h3 class="text-lg font-extrabold text-slate-900 mb-1.5">${p.judul}</h3>
-                    <p class="text-xs text-slate-600 leading-relaxed mb-3">${p.deskripsi}</p>
-                  </div>
-                  <div class="text-xs text-slate-500 flex items-center gap-1.5">
-                    <i data-lucide="map-pin" class="w-3.5 h-3.5 text-orange-500"></i> ${p.lokasi}
-                  </div>
-                </div>
-              </div>
-            `).join('') || '<p class="text-slate-400">Belum ada data potensi.</p>'}
-          </div>
-        </div>
-      `;
+      return `<div class="max-w-7xl mx-auto px-4 lg:px-8 py-10 fade-in">
+        <h1 class="text-2xl font-extrabold mb-6">Potensi Kampung</h1>
+        <div class="grid md:grid-cols-2 gap-6">${state.potensi.map(p => `
+          <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-100 flex flex-col sm:flex-row">
+            <img src="${p.gambar}" class="sm:w-44 h-44 sm:h-auto object-cover" />
+            <div class="p-5"><span class="text-xs font-bold text-teal-700 bg-teal-50 px-2.5 py-0.5 rounded-full">${p.kategori}</span><h3 class="font-extrabold text-lg mt-2">${p.judul}</h3><p class="text-xs text-slate-600 my-2">${p.deskripsi}</p><div class="text-xs text-slate-500">Lokasi: ${p.lokasi}</div></div>
+          </div>`).join('') || '<p class="text-slate-400 text-sm">Belum ada data potensi.</p>'}</div>
+      </div>`;
     }
 
-    // ================= VIEW: AGENDA & PENGUMUMAN =================
     function viewAgenda() {
-      return `
-        <div class="max-w-7xl mx-auto px-4 lg:px-8 py-10 fade-in">
-          ${pageHeader('Agenda & Pengumuman', 'Jadwal kegiatan warga, rapat kampung, serta pengumuman resmi dari pengelola.')}
-          <div class="space-y-4">
-            ${db.agenda.map(ag => `
-              <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div class="flex items-start gap-4">
-                  <div class="w-12 h-12 rounded-xl ${ag.jenis === 'Pengumuman' ? 'bg-amber-100 text-amber-600' : 'bg-teal-100 text-teal-700'} flex items-center justify-center shrink-0">
-                    <i data-lucide="${ag.jenis === 'Pengumuman' ? 'megaphone' : 'calendar-days'}" class="w-6 h-6"></i>
-                  </div>
-                  <div>
-                    <span class="text-[11px] font-bold uppercase tracking-wider ${ag.jenis === 'Pengumuman' ? 'text-amber-600' : 'text-teal-700'}">${ag.jenis}</span>
-                    <h3 class="text-base font-extrabold text-slate-900">${ag.judul}</h3>
-                    <p class="text-xs text-slate-600 mt-1">${ag.keterangan}</p>
-                    <div class="flex flex-wrap items-center gap-4 mt-2 text-xs text-slate-500">
-                      <span class="flex items-center gap-1"><i data-lucide="clock" class="w-3.5 h-3.5 text-orange-500"></i> ${ag.jadwal}</span>
-                      <span class="flex items-center gap-1"><i data-lucide="map-pin" class="w-3.5 h-3.5 text-teal-600"></i> ${ag.lokasi}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            `).join('') || '<p class="text-slate-400">Belum ada agenda atau pengumuman.</p>'}
-          </div>
-        </div>
-      `;
+      return `<div class="max-w-7xl mx-auto px-4 lg:px-8 py-10 fade-in">
+        <h1 class="text-2xl font-extrabold mb-6">Agenda & Pengumuman</h1>
+        <div class="space-y-4">${state.agenda.map(a => `
+          <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
+            <span class="text-[11px] font-bold uppercase text-amber-600">${a.jenis}</span>
+            <h3 class="font-extrabold text-base mt-0.5">${a.judul}</h3>
+            <p class="text-xs text-slate-600 mt-1">${a.keterangan}</p>
+            <div class="text-xs text-slate-500 mt-2">${a.jadwal} • ${a.lokasi}</div>
+          </div>`).join('') || '<p class="text-slate-400 text-sm">Belum ada agenda.</p>'}</div>
+      </div>`;
     }
 
-    // ================= VIEW: KONTAK PENGELOLA =================
     function viewKontak() {
-      const k = db.kontak;
-      return `
-        <div class="max-w-7xl mx-auto px-4 lg:px-8 py-10 fade-in">
-          ${pageHeader('Kontak Pengelola', 'Sampaikan pertanyaan, saran, atau laporan warga langsung ke pengelola kampung.')}
-          <div class="grid grid-cols-1 lg:grid-cols-12 gap-7">
-            <div class="lg:col-span-5 bg-white rounded-2xl p-6 shadow-sm border border-slate-100 space-y-5">
-              <h3 class="text-lg font-extrabold text-[#115E59]">Informasi Balai Kampung</h3>
-              <div class="space-y-4 text-sm text-slate-600">
-                <div class="flex items-start gap-3"><i data-lucide="map-pin" class="w-5 h-5 text-orange-500 shrink-0 mt-0.5"></i><div><div class="font-bold text-slate-800">Alamat</div>${k.alamat}</div></div>
-                <div class="flex items-start gap-3"><i data-lucide="phone" class="w-5 h-5 text-teal-600 shrink-0 mt-0.5"></i><div><div class="font-bold text-slate-800">Telepon</div>${k.telepon}</div></div>
-                <div class="flex items-start gap-3"><i data-lucide="mail" class="w-5 h-5 text-sky-600 shrink-0 mt-0.5"></i><div><div class="font-bold text-slate-800">Email</div>${k.email}</div></div>
-                <div class="flex items-start gap-3"><i data-lucide="clock" class="w-5 h-5 text-emerald-600 shrink-0 mt-0.5"></i><div><div class="font-bold text-slate-800">Jam Operasional</div>${k.jam}</div></div>
+      const k = state.kontak;
+      return `<div class="max-w-7xl mx-auto px-4 lg:px-8 py-10 fade-in">
+        <h1 class="text-2xl font-extrabold mb-6">Kontak Pengelola</h1>
+        <div class="grid lg:grid-cols-12 gap-6">
+          <div class="lg:col-span-5 bg-white rounded-2xl p-6 shadow-sm border border-slate-100 space-y-3 text-sm">
+            <div><strong>Alamat:</strong> ${k.alamat}</div><div><strong>Telepon:</strong> ${k.telepon}</div><div><strong>Email:</strong> ${k.email}</div><div><strong>Jam:</strong> ${k.jam}</div>
+          </div>
+          <div class="lg:col-span-7 bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+            <h3 class="font-extrabold mb-4">Kirim Pesan / Aspirasi Warga</h3>
+            <form onsubmit="window.kirimPesan(event)" class="space-y-3">
+              <div class="grid sm:grid-cols-2 gap-3">
+                <input id="pw-nama" required placeholder="Nama Lengkap" class="px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm" />
+                <input id="pw-kontak" required placeholder="No. HP / WA" class="px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm" />
               </div>
-              <a href="https://wa.me/${k.whatsapp}" target="_blank" class="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm flex items-center justify-center gap-2 transition">
-                <i data-lucide="message-circle" class="w-4 h-4"></i> Chat WhatsApp Pengelola
-              </a>
-            </div>
-            <div class="lg:col-span-7 bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
-              <h3 class="text-lg font-extrabold text-slate-900 mb-4">Kirim Pesan / Aspirasi Warga</h3>
-              <form onsubmit="kirimPesanWarga(event)" class="space-y-4">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">Nama Lengkap</label>
-                    <input id="pw-nama" required type="text" placeholder="Contoh: Budi Santoso" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600" />
-                  </div>
-                  <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">No. HP / WhatsApp</label>
-                    <input id="pw-kontak" required type="text" placeholder="0812xxxxxxxx" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600" />
-                  </div>
-                </div>
-                <div>
-                  <label class="block text-xs font-bold text-slate-700 mb-1">Perihal / Subjek</label>
-                  <input id="pw-subjek" required type="text" placeholder="Contoh: Usulan kegiatan / Pengaduan fasilitas" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600" />
-                </div>
-                <div>
-                  <label class="block text-xs font-bold text-slate-700 mb-1">Isi Pesan</label>
-                  <textarea id="pw-pesan" required rows="4" placeholder="Tuliskan pesan Anda di sini..." class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600"></textarea>
-                </div>
-                <button type="submit" class="px-6 py-2.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white font-bold text-sm shadow transition">
-                  Kirim Pesan ke Pengelola
-                </button>
-                <div id="pw-status" class="hidden text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-4 py-2.5 rounded-xl"></div>
-              </form>
-            </div>
+              <input id="pw-subjek" required placeholder="Subjek / Perihal" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm" />
+              <textarea id="pw-pesan" required rows="3" placeholder="Tulis pesan Anda..." class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm"></textarea>
+              <button type="submit" class="px-6 py-2.5 rounded-full bg-amber-500 text-white font-bold text-sm">Kirim Pesan</button>
+              <div id="pw-ok" class="hidden text-xs font-bold text-emerald-700 bg-emerald-50 p-3 rounded-xl"></div>
+            </form>
           </div>
         </div>
-      `;
+      </div>`;
     }
 
-    function pageHeader(title, subtitle) {
-      return `
-        <div class="mb-8">
-          <div class="flex items-center gap-2 text-xs font-semibold text-teal-700 mb-1">
-            <button onclick="navigate('beranda')" class="hover:underline">Beranda</button> / <span>${title}</span>
-          </div>
-          <h1 class="text-2xl md:text-3xl font-extrabold text-slate-900">${title}</h1>
-          <p class="text-sm text-slate-500 mt-1">${subtitle}</p>
-        </div>
-      `;
-    }
-
-    // ================= INTERACTIONS & MODALS =================
-    function openBerita(id) {
-      const item = db.berita.find(b => b.id === id);
-      if (!item) return;
-      item.views = (Number(item.views) || 0) + 1;
-      saveData();
-
-      document.getElementById('modal-badge').textContent = item.kategori;
-      document.getElementById('modal-body').innerHTML = `
-        <img src="${item.gambar}" alt="${item.judul}" class="w-full h-64 object-cover rounded-xl mb-5" />
-        <h2 class="text-xl md:text-2xl font-extrabold text-slate-900 mb-2">${item.judul}</h2>
-        <div class="flex items-center gap-4 text-xs text-slate-500 mb-5">
-          <span>${item.tanggal}</span> • <span>${item.views.toLocaleString('id-ID')} kali dibaca</span>
-        </div>
-        <div class="text-sm text-slate-700 leading-relaxed whitespace-pre-line">${item.isi}</div>
-      `;
+    window.navigate = (page) => { currentPage = page; renderAll(); window.scrollTo({ top: 0, behavior: 'smooth' }); };
+    window.closeModal = () => document.getElementById('detail-modal').classList.add('hidden');
+    window.openBerita = async (id) => {
+      const b = state.berita.find(x => x.id === id);
+      if (!b) return;
+      updateDoc(doc(db, 'berita', id), { views: increment(1) }).catch(() => {});
+      document.getElementById('modal-badge').textContent = b.kategori;
+      document.getElementById('modal-body').innerHTML = `<img src="${b.gambar}" class="w-full h-60 object-cover rounded-xl mb-4" /><h2 class="text-xl font-extrabold mb-2">${b.judul}</h2><div class="text-xs text-slate-500 mb-4">${b.tanggal}</div><div class="text-sm text-slate-700 whitespace-pre-line">${b.isi}</div>`;
       document.getElementById('detail-modal').classList.remove('hidden');
-      renderPage(currentPage);
-    }
-
-    function openAgenda(id) {
-      const ag = db.agenda.find(a => a.id === id);
-      if (!ag) return;
-      document.getElementById('modal-badge').textContent = ag.jenis;
-      document.getElementById('modal-body').innerHTML = `
-        <h2 class="text-xl font-extrabold text-slate-900 mb-3">${ag.judul}</h2>
-        <div class="space-y-2 text-sm text-slate-600 bg-slate-50 p-4 rounded-xl mb-4">
-          <div><strong>Waktu:</strong> ${ag.jadwal}</div>
-          <div><strong>Lokasi:</strong> ${ag.lokasi}</div>
-        </div>
-        <p class="text-sm text-slate-700 leading-relaxed">${ag.keterangan}</p>
-      `;
+    };
+    window.openAgenda = (id) => {
+      const a = state.agenda.find(x => x.id === id);
+      if (!a) return;
+      document.getElementById('modal-badge').textContent = a.jenis;
+      document.getElementById('modal-body').innerHTML = `<h2 class="text-xl font-extrabold mb-2">${a.judul}</h2><div class="text-xs text-slate-500 mb-3">${a.jadwal} • ${a.lokasi}</div><p class="text-sm text-slate-700">${a.keterangan}</p>`;
       document.getElementById('detail-modal').classList.remove('hidden');
-    }
-
-    function openGaleri(id) {
-      const g = db.galeri.find(x => x.id === id);
-      if (!g) return;
-      document.getElementById('modal-badge').textContent = `${g.tipe} • ${g.kategori}`;
-      document.getElementById('modal-body').innerHTML = `
-        <img src="${g.url}" alt="${g.judul}" class="w-full max-h-[60vh] object-contain rounded-xl bg-slate-100 mb-4" />
-        <h3 class="text-lg font-extrabold text-slate-900">${g.judul}</h3>
-        <p class="text-xs text-slate-500 mt-1">Diunggah: ${g.tanggal}</p>
-      `;
-      document.getElementById('detail-modal').classList.remove('hidden');
-    }
-
-    function closeModal() {
-      document.getElementById('detail-modal').classList.add('hidden');
-    }
-
-    function kirimPesanWarga(e) {
+    };
+    window.kirimPesan = async (e) => {
       e.preventDefault();
-      loadData();
-      const newMsg = {
-        id: Date.now(),
+      await addDoc(collection(db, 'pesan_warga'), {
         nama: document.getElementById('pw-nama').value.trim(),
         kontak: document.getElementById('pw-kontak').value.trim(),
         subjek: document.getElementById('pw-subjek').value.trim(),
         pesan: document.getElementById('pw-pesan').value.trim(),
-        tanggal: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })
-      };
-      db.pesanWarga.unshift(newMsg);
-      saveData();
+        tanggal: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }),
+        createdAt: serverTimestamp()
+      });
       e.target.reset();
-      const st = document.getElementById('pw-status');
-      st.textContent = 'Pesan Anda berhasil terkirim dan langsung masuk ke Panel Admin Pengelola!';
-      st.classList.remove('hidden');
-    }
+      const ok = document.getElementById('pw-ok');
+      ok.textContent = 'Pesan berhasil terkirim ke Database Pengelola!';
+      ok.classList.remove('hidden');
+    };
 
-    // Global Search
-    document.getElementById('global-search').addEventListener('input', (e) => {
-      const q = e.target.value.trim().toLowerCase();
-      if (!q) { renderPage(currentPage); return; }
-      const bRes = db.berita.filter(x => x.status !== 'draft' && (x.judul + x.ringkasan).toLowerCase().includes(q));
-      const aRes = db.agenda.filter(x => (x.judul + x.keterangan).toLowerCase().includes(q));
-      const lRes = db.layanan.filter(x => (x.nama + x.deskripsi).toLowerCase().includes(q));
-      const pRes = db.potensi.filter(x => (x.judul + x.deskripsi).toLowerCase().includes(q));
-
-      const container = document.getElementById('app-content');
-      container.innerHTML = `
-        <div class="max-w-7xl mx-auto px-4 lg:px-8 py-10 fade-in">
-          <h2 class="text-xl font-extrabold text-slate-900 mb-6">Hasil Pencarian: "<span class="text-[#115E59]">${q}</span>"</h2>
-          <div class="space-y-6">
-            ${bRes.length ? `<div><h3 class="font-bold text-sm text-teal-800 mb-2">Berita (${bRes.length})</h3><div class="grid sm:grid-cols-2 gap-3">${bRes.map(x => `<div onclick="openBerita(${x.id})" class="bg-white p-4 rounded-xl border border-slate-100 cursor-pointer hover:shadow"><div class="font-bold text-sm">${x.judul}</div><div class="text-xs text-slate-500 mt-1">${x.tanggal}</div></div>`).join('')}</div></div>` : ''}
-            ${aRes.length ? `<div><h3 class="font-bold text-sm text-teal-800 mb-2">Agenda & Pengumuman (${aRes.length})</h3><div class="grid sm:grid-cols-2 gap-3">${aRes.map(x => `<div onclick="openAgenda(${x.id})" class="bg-white p-4 rounded-xl border border-slate-100 cursor-pointer hover:shadow"><div class="font-bold text-sm">${x.judul}</div><div class="text-xs text-slate-500 mt-1">${x.jadwal}</div></div>`).join('')}</div></div>` : ''}
-            ${lRes.length ? `<div><h3 class="font-bold text-sm text-teal-800 mb-2">Layanan (${lRes.length})</h3><div class="grid sm:grid-cols-2 gap-3">${lRes.map(x => `<div onclick="navigate('layanan')" class="bg-white p-4 rounded-xl border border-slate-100 cursor-pointer hover:shadow"><div class="font-bold text-sm">${x.nama}</div><div class="text-xs text-slate-500 mt-1">${x.jam}</div></div>`).join('')}</div></div>` : ''}
-            ${pRes.length ? `<div><h3 class="font-bold text-sm text-teal-800 mb-2">Potensi (${pRes.length})</h3><div class="grid sm:grid-cols-2 gap-3">${pRes.map(x => `<div onclick="navigate('potensi')" class="bg-white p-4 rounded-xl border border-slate-100 cursor-pointer hover:shadow"><div class="font-bold text-sm">${x.judul}</div><div class="text-xs text-slate-500 mt-1">${x.kategori}</div></div>`).join('')}</div></div>` : ''}
-            ${(!bRes.length && !aRes.length && !lRes.length && !pRes.length) ? '<div class="bg-white p-8 rounded-2xl text-center text-slate-400">Tidak ditemukan informasi yang cocok.</div>' : ''}
-          </div>
-        </div>
-      `;
-    });
-
-    // Init
-    loadData();
-    renderHeaderFooter();
-    renderPage('beranda');
+    initApp();
   </script>
 </body>
 </html>
