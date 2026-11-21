@@ -1,1 +1,333 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel v2.0 - Warzt</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>W</text></svg>">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore-compat.js"></script>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body class="bg-slate-950 text-slate-200 font-sans selection:bg-blue-500/30">
+  <div id="root"></div>
 
+  <script type="text/babel">
+    const firebaseConfig = {
+      apiKey: "AIzaSyAKgd4wAvmwRieaK-Z7XW8DXfAPbBWtF_I",
+      authDomain: "warztdatabase.firebaseapp.com",
+      projectId: "warztdatabase",
+      storageBucket: "warztdatabase.firebasestorage.app",
+      messagingSenderId: "615788779338",
+      appId: "1:615788779338:web:d763f3f24501898c7413b3"
+    };
+    
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const { useState, useEffect, useRef } = React;
+
+    const TrashIcon = () => <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>;
+    const EditIcon = () => <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>;
+    const LogOutIcon = () => <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>;
+
+    function App() {
+      const [isLoggedIn, setIsLoggedIn] = useState(false);
+      const [username, setUsername] = useState('');
+      const [password, setPassword] = useState('');
+      
+      const [projects, setProjects] = useState([]);
+      const [menuItems, setMenuItems] = useState([]);
+      const [testimonials, setTestimonials] = useState([]);
+      
+      const defaultSettings = { waNumber: '6289504595660', siteName: 'Warzt.', heroTitle: 'Warzt Official', heroSubtitle: 'Pusat direktori aplikasi digital, tools otomatisasi, dan micro-SaaS.', bannerActive: false, bannerText: '🔥 Flash Sale: Diskon 50% Hari Ini!' };
+      const [settings, setSettings] = useState(defaultSettings);
+
+      const [showForm, setShowForm] = useState(false);
+      const [editingProjectId, setEditingProjectId] = useState(null); 
+      const defaultFormData = { title: '', description: '', link: '', imageUrl: '', category: '', tags: 'Aplikasi', icon: 'CodeIcon', status: 'published', priceType: 'gratis', premiumKey: '', isFeatured: false, actionType: 'link' };
+      const [formData, setFormData] = useState(defaultFormData);
+      
+      // STATE UNTUK MENU KATEGORI
+      const [showMenuForm, setShowMenuForm] = useState(false);
+      const [editingMenuId, setEditingMenuId] = useState(null);
+      const [menuData, setMenuData] = useState({ label: '', oldLabel: '' });
+
+      const [showTestiForm, setShowTestiForm] = useState(false);
+      const [testiData, setTestiData] = useState({ name: '', role: '', message: '' });
+
+      const formRef = useRef(null);
+
+      useEffect(() => {
+        if (isLoggedIn) {
+          const unsubProjects = db.collection('projects').onSnapshot(snapshot => setProjects(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))));
+          const unsubMenu = db.collection('menuItems').orderBy('createdAt', 'asc').onSnapshot(snapshot => setMenuItems(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))));
+          const unsubTesti = db.collection('testimonials').orderBy('createdAt', 'desc').onSnapshot(snapshot => setTestimonials(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))));
+          const unsubSettings = db.collection('settings').doc('global').onSnapshot(doc => { if (doc.exists) setSettings(doc.data()); });
+          return () => { unsubProjects(); unsubMenu(); unsubTesti(); unsubSettings(); };
+        }
+      }, [isLoggedIn]);
+
+      const handleLogin = (e) => { e.preventDefault(); if (username === 'admin' && password === 'warzt') setIsLoggedIn(true); else alert("Username atau password salah!"); };
+
+      const totalApps = projects.length;
+      const totalClicks = projects.reduce((sum, p) => sum + (p.clicks || 0), 0);
+      const topApp = projects.length > 0 ? projects.reduce((prev, current) => ((prev.clicks || 0) > (current.clicks || 0)) ? prev : current) : {};
+
+      const handleSaveSettings = async (e) => { e.preventDefault(); try { await db.collection('settings').doc('global').set(settings, { merge: true }); alert("Pengaturan Berhasil Disimpan!"); } catch (err) { alert(err.message); } };
+      
+      const handleSaveProject = async (e) => { 
+        e.preventDefault(); 
+        try { 
+          if (editingProjectId) await db.collection('projects').doc(editingProjectId).update(formData); 
+          else await db.collection('projects').add({ ...formData, clicks: 0 }); 
+          closeForm(); 
+        } catch (err) { alert(err.message); } 
+      };
+      
+      const closeForm = () => { setShowForm(false); setEditingProjectId(null); setFormData(defaultFormData); };
+      const handleEditClick = (project) => { setEditingProjectId(project.id); setFormData({ ...defaultFormData, ...project }); setShowForm(true); setTimeout(() => formRef.current?.scrollIntoView({ behavior: 'smooth' }), 100); };
+      const handleDeleteProject = async (id) => { if (window.confirm("Hapus aplikasi ini?")) await db.collection('projects').doc(id).delete(); };
+      
+      // LOGIKA EDIT MENU PINTAR (Sinkronisasi Otomatis)
+      const handleSaveMenu = async (e) => { 
+        e.preventDefault(); 
+        try { 
+          if (editingMenuId) {
+            // 1. Update nama menu di database Menu
+            await db.collection('menuItems').doc(editingMenuId).update({ label: menuData.label });
+            
+            // 2. Cari semua aplikasi yang memakai nama menu lama, lalu update jadi nama baru secara massal
+            if (menuData.oldLabel && menuData.oldLabel !== menuData.label) {
+              const snapshot = await db.collection('projects').where('category', '==', menuData.oldLabel).get();
+              if (!snapshot.empty) {
+                const batch = db.batch();
+                snapshot.docs.forEach(doc => {
+                  batch.update(doc.ref, { category: menuData.label });
+                });
+                await batch.commit(); // Eksekusi update massal
+              }
+            }
+          } else {
+            // Jika tambah menu baru
+            await db.collection('menuItems').add({ label: menuData.label, createdAt: firebase.firestore.FieldValue.serverTimestamp() }); 
+          }
+          
+          closeMenuForm();
+        } catch (err) { alert(err.message); } 
+      };
+      
+      const handleEditMenuClick = (menu) => {
+        setEditingMenuId(menu.id);
+        setMenuData({ label: menu.label, oldLabel: menu.label }); // oldLabel disimpan untuk melacak aplikasi lama
+        setShowMenuForm(true);
+      };
+
+      const closeMenuForm = () => {
+        setShowMenuForm(false);
+        setEditingMenuId(null);
+        setMenuData({ label: '', oldLabel: '' });
+      };
+
+      const handleDeleteMenu = async (id) => { if (window.confirm("Hapus Kategori Menu ini? Aplikasi di dalamnya akan terlempar ke 'Kategori Lainnya'.")) await db.collection('menuItems').doc(id).delete(); };
+
+      const handleAddTesti = async (e) => { e.preventDefault(); try { await db.collection('testimonials').add({ ...testiData, createdAt: firebase.firestore.FieldValue.serverTimestamp() }); setShowTestiForm(false); setTestiData({ name: '', role: '', message: '' }); } catch (err) { alert(err.message); } };
+      const handleDeleteTesti = async (id) => { if (window.confirm("Hapus ulasan pelanggan ini secara permanen?")) await db.collection('testimonials').doc(id).delete(); };
+
+      if (!isLoggedIn) {
+        return (
+          <div className="min-h-screen flex items-center justify-center p-4 bg-slate-950">
+            <div className="max-w-md w-full bg-slate-900/80 p-8 rounded-2xl border border-slate-800 shadow-2xl">
+              <h1 className="text-3xl font-bold text-center text-blue-400 mb-8">Warzt Admin v2.0</h1>
+              <form onSubmit={handleLogin} className="space-y-6">
+                <input type="text" value={username} onChange={e => setUsername(e.target.value)} className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3" placeholder="Username (admin)" required />
+                <input type="password" value={password} onChange={e => setPassword(e.target.value)} className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3" placeholder="Password (warzt)" required />
+                <button type="submit" className="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 rounded-xl">Login Admin</button>
+              </form>
+            </div>
+          </div>
+        );
+      }
+
+      return (
+        <div className="min-h-screen bg-slate-950 pb-20">
+          <nav className="bg-slate-900 border-b border-slate-800 sticky top-0 z-50 px-6 py-4 flex justify-between">
+            <h1 className="text-xl font-bold">Warzt <span className="text-blue-500">Admin</span></h1>
+            <button onClick={() => setIsLoggedIn(false)} className="flex items-center space-x-2 text-slate-400 hover:text-white"><LogOutIcon/></button>
+          </nav>
+
+          <main className="max-w-6xl mx-auto px-6 py-8 space-y-16">
+            
+            {/* 1. DASBOR ANALITIK */}
+            <section>
+              <h2 className="text-2xl font-bold text-white mb-6">📊 Ringkasan Bisnis</h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-lg">
+                  <div className="text-slate-400 text-sm font-medium mb-1">Total Aplikasi (Aktif & Draft)</div>
+                  <div className="text-4xl font-black text-blue-400">{totalApps}</div>
+                </div>
+                <div className="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-lg">
+                  <div className="text-slate-400 text-sm font-medium mb-1">Total Klik Semua Aplikasi</div>
+                  <div className="text-4xl font-black text-orange-400">{totalClicks}</div>
+                </div>
+                <div className="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-lg">
+                  <div className="text-slate-400 text-sm font-medium mb-1">Aplikasi Terpopuler</div>
+                  <div className="text-xl font-bold text-emerald-400 truncate">{topApp.title || '-'}</div>
+                  <div className="text-sm text-slate-500">🔥 {topApp.clicks || 0} Klik</div>
+                </div>
+              </div>
+            </section>
+
+            {/* 2. PENGATURAN GLOBAL */}
+            <section className="bg-slate-900/50 p-6 rounded-2xl border border-slate-800">
+              <h2 className="text-2xl font-bold text-white mb-6">⚙️ Pengaturan Website (Global)</h2>
+              <form onSubmit={handleSaveSettings} className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div><label className="text-xs text-slate-400 block mb-1">Nomor WhatsApp Master (Format: 628...)</label><input type="text" value={settings.waNumber} onChange={e => setSettings({...settings, waNumber: e.target.value})} className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2" required /></div>
+                  <div><label className="text-xs text-slate-400 block mb-1">Nama Brand Kiri Atas</label><input type="text" value={settings.siteName} onChange={e => setSettings({...settings, siteName: e.target.value})} className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2" required /></div>
+                  <div><label className="text-xs text-slate-400 block mb-1">Teks Judul Besar (Hero)</label><input type="text" value={settings.heroTitle} onChange={e => setSettings({...settings, heroTitle: e.target.value})} className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2" required /></div>
+                  <div><label className="text-xs text-slate-400 block mb-1">Sub Judul Bawahnya</label><input type="text" value={settings.heroSubtitle} onChange={e => setSettings({...settings, heroSubtitle: e.target.value})} className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2" required /></div>
+                </div>
+                
+                <div className="p-4 bg-slate-950 rounded-xl border border-slate-800">
+                  <div className="flex items-center space-x-3 mb-2">
+                    <input type="checkbox" id="banner" checked={settings.bannerActive} onChange={e => setSettings({...settings, bannerActive: e.target.checked})} className="w-5 h-5 accent-orange-500" />
+                    <label htmlFor="banner" className="font-bold text-orange-400 cursor-pointer">Aktifkan Pop-up Promo Otomatis ke WA</label>
+                  </div>
+                  <input type="text" placeholder="Teks Promo (Misal: Diskon 50% Template Kasir)..." value={settings.bannerText} onChange={e => setSettings({...settings, bannerText: e.target.value})} className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 mt-2" />
+                </div>
+
+                <button type="submit" className="bg-blue-600 hover:bg-blue-500 px-6 py-2 rounded-lg font-bold">Simpan Pengaturan Global</button>
+              </form>
+            </section>
+
+            {/* 3. MENU KATEGORI */}
+            <section>
+              <div className="flex justify-between items-center mb-6"><h2 className="text-2xl font-bold text-white">🗂️ Kategori Menu (Garis 3)</h2>{!showMenuForm && <button onClick={() => setShowMenuForm(true)} className="bg-slate-800 px-4 py-2 rounded-lg font-medium">+ Tambah Menu</button>}</div>
+              
+              {/* FORM TAMBAH & EDIT MENU */}
+              {showMenuForm && (
+                <form onSubmit={handleSaveMenu} className="bg-slate-900 p-6 rounded-2xl border border-slate-800 mb-6 shadow-xl ring-1 ring-blue-500/50">
+                  <h3 className="text-lg font-bold text-blue-400 mb-3">{editingMenuId ? "✏️ Edit Kategori Menu" : "✨ Tambah Kategori Menu"}</h3>
+                  <div className="flex gap-4">
+                    <input type="text" placeholder="Nama Menu..." value={menuData.label} onChange={e => setMenuData({...menuData, label: e.target.value})} className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2" required />
+                    <button type="submit" className="bg-blue-600 hover:bg-blue-500 px-6 py-2 rounded-lg font-bold transition">{editingMenuId ? 'Update' : 'Simpan'}</button>
+                    <button type="button" onClick={closeMenuForm} className="bg-slate-800 hover:bg-slate-700 px-6 py-2 rounded-lg font-bold transition">Batal</button>
+                  </div>
+                  {editingMenuId && <p className="text-xs text-slate-500 mt-3">*Proyek yang berada di kategori ini akan otomatis diperbarui agar tidak hilang.</p>}
+                </form>
+              )}
+              
+              <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden"><table className="w-full text-left"><tbody className="divide-y divide-slate-800/50">
+                {menuItems.map(menu => (
+                  <tr key={menu.id} className="hover:bg-slate-800/50">
+                    <td className="py-3 px-6 font-bold">{menu.label}</td>
+                    <td className="py-3 px-6 text-right">
+                      <div className="flex justify-end space-x-2">
+                        {/* TOMBOL EDIT KATEGORI */}
+                        <button onClick={() => handleEditMenuClick(menu)} className="p-2 text-blue-400 hover:bg-blue-900/30 rounded-lg transition" title="Edit Nama Menu"><EditIcon /></button>
+                        <button onClick={() => handleDeleteMenu(menu.id)} className="p-2 text-red-400 hover:bg-red-900/30 rounded-lg transition" title="Hapus Kategori"><TrashIcon /></button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody></table></div>
+            </section>
+
+            {/* 4. DAFTAR APLIKASI */}
+            <section>
+              <div ref={formRef} className="flex justify-between items-center mb-6"><h2 className="text-2xl font-bold text-white">📱 Aplikasi & Produk</h2>{!showForm && <button onClick={() => setShowForm(true)} className="bg-emerald-600 hover:bg-emerald-500 px-4 py-2 rounded-lg font-medium transition">+ Tambah Aplikasi</button>}</div>
+              {showForm && (
+                <form onSubmit={handleSaveProject} className="bg-slate-900 p-6 rounded-2xl border border-slate-800 mb-6 space-y-6 shadow-xl ring-1 ring-emerald-500/50">
+                  <h3 className="text-lg font-bold text-emerald-400 mb-2">{editingProjectId ? "✏️ Edit Aplikasi" : "✨ Tambah Aplikasi Baru"}</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div><label className="text-xs text-slate-400 block mb-1">Nama Aplikasi</label><input type="text" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2" required /></div>
+                    <div><label className="text-xs text-slate-400 block mb-1">Kategori Menu</label><select value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})} className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2 font-bold" required><option value="" disabled>-- Pilih --</option>{menuItems.map(m => <option key={m.id} value={m.label}>{m.label}</option>)}</select></div>
+                    <div><label className="text-xs text-slate-400 block mb-1">Link URL Tujuan</label><input type="text" value={formData.link} onChange={e => setFormData({...formData, link: e.target.value})} className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2" required /></div>
+                    <div><label className="text-xs text-slate-400 block mb-1">Link Gambar (.jpg/.png)</label><input type="text" value={formData.imageUrl} onChange={e => setFormData({...formData, imageUrl: e.target.value})} className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2" /></div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-slate-800 pt-4">
+                    <div><label className="text-xs text-slate-400 block mb-1">Status Publikasi</label><select value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})} className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2 font-medium"><option value="published">🟢 Tampilkan di Web</option><option value="draft">🟡 Sembunyikan (Draft)</option></select></div>
+                    
+                    <div>
+                      <label className="text-xs text-slate-400 block mb-1">Tipe Produk</label>
+                      <select value={formData.priceType} onChange={e => setFormData({...formData, priceType: e.target.value})} className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2 font-medium text-amber-400">
+                        <option value="gratis">🆓 Gratis (Langsung Buka)</option>
+                        <option value="premium">💎 Premium (Terkunci Key)</option>
+                      </select>
+                    </div>
+
+                    {formData.priceType === 'premium' ? (
+                      <div>
+                        <label className="text-xs font-bold text-amber-400 block mb-1">🔑 Buat Premium Key</label>
+                        <input type="text" value={formData.premiumKey} onChange={e => setFormData({...formData, premiumKey: e.target.value})} placeholder="Cth: KOS-123" className="w-full bg-slate-950 border border-amber-500/50 rounded-lg px-4 py-2 text-amber-400 font-mono focus:outline-none focus:border-amber-400" required />
+                      </div>
+                    ) : (
+                      <div><label className="text-xs text-slate-400 block mb-1">Aksi Tombol</label><select value={formData.actionType} onChange={e => setFormData({...formData, actionType: e.target.value})} className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2 font-medium text-emerald-400"><option value="link">🌐 Buka Link</option><option value="wa">💬 Checkout WhatsApp</option></select></div>
+                    )}
+                  </div>
+                  
+                  <div className="flex items-center space-x-3 bg-slate-950 p-4 rounded-xl border border-slate-800"><input type="checkbox" id="featured" checked={formData.isFeatured} onChange={e => setFormData({...formData, isFeatured: e.target.checked})} className="w-5 h-5 accent-amber-500 cursor-pointer" /><label htmlFor="featured" className="text-sm font-bold text-amber-500 cursor-pointer">⭐ Jadikan Proyek Unggulan</label></div>
+                  <div><label className="text-xs text-slate-400 block mb-1">Deskripsi Singkat</label><textarea value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2" required rows="2"></textarea></div>
+                  <div className="flex space-x-3"><button type="submit" className="bg-emerald-600 hover:bg-emerald-500 px-6 py-2 rounded-lg font-bold">{editingProjectId ? "Update Data" : "Simpan"}</button><button type="button" onClick={closeForm} className="bg-slate-800 hover:bg-slate-700 px-6 py-2 rounded-lg font-bold">Batal</button></div>
+                </form>
+              )}
+              <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden"><table className="w-full text-left"><tbody className="divide-y divide-slate-800/50">
+                {projects.map(project => (
+                  <tr key={project.id} className={`hover:bg-slate-800/50 ${project.status === 'draft' ? 'opacity-50' : ''}`}>
+                    <td className="py-4 px-6 w-16">{project.imageUrl ? <img src={project.imageUrl} onError={(e) => e.target.src='https://via.placeholder.com/150/1e293b/94a3b8?text=X'} className="w-12 h-12 object-cover rounded-md" alt="Img" /> : <div className="w-12 h-12 bg-slate-800 rounded-md flex items-center justify-center text-[10px] text-slate-500">Kosong</div>}</td>
+                    <td className="py-4 px-6">
+                      <div className="font-bold">{project.isFeatured && "⭐ "}{project.title}</div>
+                      {project.priceType === 'premium' && <div className="text-xs text-amber-500 font-mono mt-1">🔑 Key: {project.premiumKey}</div>}
+                    </td>
+                    <td className="py-4 px-6 text-xs text-orange-400 font-semibold">🔥 {project.clicks || 0} Klik</td>
+                    <td className="py-4 px-6"><div className="flex justify-end space-x-2"><button onClick={() => handleEditClick(project)} className="p-2 text-blue-400 hover:bg-blue-900/30 rounded-lg"><EditIcon /></button><button onClick={() => handleDeleteProject(project.id)} className="p-2 text-red-400 hover:bg-red-900/30 rounded-lg"><TrashIcon /></button></div></td>
+                  </tr>
+                ))}
+              </tbody></table></div>
+            </section>
+
+            {/* 5. ULASAN / TESTIMONI PELANGGAN */}
+            <section>
+              <div className="flex justify-between items-center mb-6"><h2 className="text-2xl font-bold text-white">💬 Review / Testimoni Pelanggan</h2><button onClick={() => setShowTestiForm(!showTestiForm)} className="bg-purple-600 hover:bg-purple-500 px-4 py-2 rounded-lg font-medium transition">+ Tambah Testimoni</button></div>
+              
+              {showTestiForm && (
+                <form onSubmit={handleAddTesti} className="bg-slate-900 p-6 rounded-2xl border border-slate-800 mb-6 space-y-4 shadow-xl">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <input type="text" placeholder="Nama Klien..." value={testiData.name} onChange={e => setTestiData({...testiData, name: e.target.value})} className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2" required />
+                    <input type="text" placeholder="Asal Kota / Jabatan (Cth: Bos Kos Jakarta)" value={testiData.role} onChange={e => setTestiData({...testiData, role: e.target.value})} className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2" required />
+                  </div>
+                  <textarea placeholder="Pesan ulasan klien..." value={testiData.message} onChange={e => setTestiData({...testiData, message: e.target.value})} className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2" required rows="2"></textarea>
+                  <button type="submit" className="bg-purple-600 hover:bg-purple-500 px-6 py-2 rounded-lg font-bold transition">Simpan Ulasan</button>
+                </form>
+              )}
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {testimonials.map(t => (
+                  <div key={t.id} className="bg-slate-900 p-4 rounded-xl border border-slate-800 relative group">
+                    <button onClick={() => handleDeleteTesti(t.id)} className="absolute top-2 right-2 text-slate-600 hover:text-red-500 hover:bg-slate-800 p-1 rounded transition opacity-0 group-hover:opacity-100"><TrashIcon /></button>
+                    <div className="text-yellow-400 text-xs mb-2">⭐⭐⭐⭐⭐</div>
+                    <p className="text-sm text-slate-300 italic mb-4">"{t.message}"</p>
+                    <div className="font-bold text-sm text-white">{t.name}</div>
+                    <div className="text-xs text-slate-500">{t.role}</div>
+                  </div>
+                ))}
+                {testimonials.length === 0 && (
+                  <div className="col-span-full py-8 text-center text-slate-500 bg-slate-900/30 rounded-xl border border-dashed border-slate-800">
+                    Belum ada ulasan/testimoni dari pelanggan.
+                  </div>
+                )}
+              </div>
+            </section>
+            
+          </main>
+        </div>
+      );
+    }
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
